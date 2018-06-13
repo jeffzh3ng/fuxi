@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% block css %}
+    <link href="static/css/duallistbox/bootstrap-duallistbox.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<main class="app-content">
+    <div class="app-title">
+        <div>
+            <h1><i class="fa fa-th-list"></i>&nbsp;Asset Management</h1>
+            <p></p>
+        </div>
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+            <li class="breadcrumb-item">Home</li>
+            <li class="breadcrumb-item active"><a href="#">Asset List</a></li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+                    <table class="table table-hover table-bordered" id="sampleTable">
+                        <thead>
+                        <tr class="text-center">
+                            <th>Name</th>
+                            <th>Dept</th>
+                            <th>Admin</th>
+                            <th>Discover</th>
+                            <th>asset_date</th>
+                            <th>Manage</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in asset_info %}
+                            <tr>
+                                <td>
+                                    <a href="asset-services?asset={{ i['_id'] }}">{{ i['asset_name'] }}</a>
+                                </td>
+                                <td>{{ i['dept_name'] }}</td>
+                                <td>{{ i['admin_name'] }}</td>
+                                <td>{{ i['discover_option'] }}</td>
+                                <td>{{ i['asset_date'] }}</td>
+                                <td class="text-center">
+                                    <a onclick="get_asset_host('{{ i['_id'] }}')" role="button" href="#" title="New Vul Scan" data-toggle="modal" data-target="#newScan">
+                                        <i class="fa fa-bug"></i>
+                                    </a>
+                                    &nbsp;
+                                    &nbsp;
+                                    <a onclick="get_asset_host('{{ i['_id'] }}')" role="button" href="#" title="New Auth Tester" data-toggle="modal" data-target="#newAuthtest">
+                                        <i class="fa fa-gavel"></i>
+                                    </a>
+                                    &nbsp;
+                                    &nbsp;
+                                    <a onclick="asset_info('{{ i['_id'] }}')"  role="button" data-toggle="modal" href="#" title="Edit" data-target="#editAsset">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    &nbsp;
+                                    &nbsp;
+                                    <a onclick="delete_asset('{{ i['_id'] }}')"  role="button" href="#" title="Delete">
+                                        <i class="fa fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="modal fade" id="editAsset" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><!-- /edit-modal -->
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        Edit Asset
+                                    </h4>
+                                </div>
+                                <div class="modal-body" >
+                                    <form class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <label for="name"> Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="asset_name_edit" id="asset_name_edit" placeholder="Loading...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name"> Asset ID</label>
+                                            <input type="text" title="Asset ID" class="form-control" name="asset_id_edit" id="asset_id_edit" disabled="disabled">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name"> Host <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" rows="3" id="asset_host_edit" name="asset_host_edit" placeholder="Loading..."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name"> Dept <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="dept_name_edit" name="dept_name_edit">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name"> Admin <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="admin_name_edit" name="admin_name_edit">
+                                        </div>
+
+                                        <div class="toggle lg">
+                                            <label>Discover Option
+                                                <input type="checkbox" checked><span class="button-indecator"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"  data-dismiss="modal" aria-hidden="true">Cancel
+                                            </button>
+                                            <button class="btn btn-primary asset-update" type="button">
+                                                <span>Submit</span> <i class="fa fa-send m-l-10"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal-end -->
+
+                    <div class="modal fade" id="newScan" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><!-- /scan-modal -->
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        New Scan
+                                    </h4>
+                                </div>
+                                <div class="modal-body" >
+                                    <form class="form-horizontal" role="form">
+
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Task Name <span class="text-danger">*</span></label>
+                                            <div>
+                                                <input type="text" class="form-control" id="task_name" name="taskname_val" placeholder="Task Name">
+                                            </div>
+                                        </div>
+
+                                        <div class="space-6"></div>
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Recursion</label>
+                                            <div>
+                                                <select class="form-control" id="form-field-plan" title="Recursion" name="recursion_val">
+                                                    <option value="0">Once</option>
+                                                    <option value="1">Every day</option>
+                                                    <option value="7">Every week</option>
+                                                    <option value="30">Every month</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Plugin Select <span class="text-danger">*</span></label>
+                                            <div>
+                                                <select multiple="multiple" size="6" name="plugin_list" title="Plugin Select">
+                                                    {% for a in plugin_info %}
+                                                        <option value="{{ a['_id'] }}">{{ a['plugin_name'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="hr hr-16 hr-dotted"></div>
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Target <span class="text-danger">*</span></label>
+                                            <div>
+                                                <textarea class="form-control" rows="5" id="scan_target_list" title="Target" name="target_val" placeholder="Loading..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"  data-dismiss="modal" aria-hidden="true">Cancel</button>
+                                            <button class="btn btn-primary " id="asset-scan" type="button">
+                                                <span>Submit</span> <i class="fa fa-send m-l-10"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal-end -->
+                    <div class="modal fade" id="newAuthtest" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><!-- /scan-modal -->
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        New Auth Tester
+                                    </h4>
+                                </div>
+                                <div class="modal-body" >
+                                    <form class="form-horizontal" role="form">
+
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Task Name <span class="text-danger">*</span></label>
+                                            <div>
+                                                <input type="text" class="form-control" name="auth_taskname_val" placeholder="Task Name">
+                                            </div>
+                                        </div>
+
+                                        <div class="space-6"></div>
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Recursion</label>
+                                            <div>
+                                                <select class="form-control" id="auth_recursion" title="Recursion" name="auth_recursion">
+                                                    <option value="0">Once</option>
+                                                    <option value="1">Every day</option>
+                                                    <option value="7">Every week</option>
+                                                    <option value="30">Every month</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Auth Scheme</label>
+                                            <div>
+                                                <select class="form-control" id="auth_type" title="type" name="auth_type">
+                                                    <option value="basic_auth">HTTP Basic Access Auth</option>
+                                                    <option value="ssh_auth">SSH Auth</option>
+                                                    <option value="mysql_auth">MySQL Auth</option>
+                                                    <option value="redis_auth">Redis Auth</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="hr hr-16 hr-dotted"></div>
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Target <span class="text-danger">*</span></label>
+                                            <div>
+                                                <textarea class="form-control" rows="5" id="auth_target_list" title="Target" name="auth_target_list" placeholder="Loading..."></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                <label class="control-label no-padding-right">Username<span class="text-danger">*</span></label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One username per line" rows="6" name="username_val">{{ username_list }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="control-label no-padding-right">Password<span class="text-danger">*</span></label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One password per line" rows="6" name="password_val">{{ password_list }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"  data-dismiss="modal" aria-hidden="true">Cancel</button>
+                                            <button class="btn btn-primary " id="asset-auth-tasks" type="button">
+                                                <span>Submit</span> <i class="fa fa-send m-l-10"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal-end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+{% block js %}
+    <!-- Data table plugin-->
+    <script type="text/javascript" src="static/js/plugins/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="static/js/plugins/dataTables.bootstrap.min.js"></script>
+    <script src="static/js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="static/js/jquery/jquery.bootstrap-duallistbox.js"></script>
+
+    <script src="static/js/server/asset-management.js"></script>
+{% endblock %}

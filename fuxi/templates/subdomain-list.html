@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block css %}
+
+{% endblock %}
+{% block content %}
+<main class="app-content">
+      <div class="app-title">
+        <div>
+          <h1><i class="fa fa-th-list"></i>&nbsp;Subdomain List</h1>
+          <p></p>
+        </div>
+        <ul class="app-breadcrumb breadcrumb side">
+          <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+          <li class="breadcrumb-item">Home</li>
+          <li class="breadcrumb-item active"><a href="#">Subdomain List</a></li>
+        </ul>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="tile">
+            <div class="tile-body">
+              <table class="table table-hover table-bordered" id="sampleTable">
+                <thead>
+                    <tr class="text-center">
+                        <th>Subdomain</th>
+                        <th>Domain</th>
+                        <th>Title</th>
+                        <th>IP</th>
+                        <th>Date</th>
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in sub_result %}
+                    <tr  class="center">
+                        <td>
+                            <a role="button" href="http://{{ i['subdomain'] }}" target="view_window" title="Open">
+                                {{ i['subdomain'] }}
+                            </a>
+                        </td>
+                        <td>{{ i['domain'] }}</td>
+                        <td>{{ i['title'] }}</td>
+                        <td>{{ i['result'][0] }}</td>
+                        <td>{{ i['date'] }}</td>
+                        <td class="text-center">
+                            <a onclick="vul_result('{{ i['_id'] }}')"  role="button" data-target="#vulResult" data-toggle="modal" href="#" title="result" >
+                                <i class="ace-icon fa fa-file-archive-o bigger-130"></i>
+                            </a>
+                            &nbsp;
+                            <a href="vulnerability?delete={{ i['_id'] }}" title="delete" >
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+{% endblock %}
+{% block js %}
+    <!-- Data table plugin-->
+    <script type="text/javascript" src="static/js/plugins/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="static/js/plugins/dataTables.bootstrap.min.js"></script>
+    <script src="static/js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="static/js/server/subdomain-list.js"></script>
+{% endblock %}

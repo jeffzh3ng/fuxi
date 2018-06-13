@@ -1,0 +1,130 @@
+# PLUGIN_DB 插件集合
+------------------------------------
+plugin_version          影响版本
+plugin_type             漏洞名称
+plugin_date             漏洞日期
+plugin_filename         文件路径
+plugin_name             插件名
+plugin_app              应用名称
+plugin_author           插件作者
+_id                     ObjectId
+------------------------------------
+
+# TASKS_DB 任务集合
+------------------------------------
+task_status             任务状态
+end_date                结束时间
+scan_target             扫描对象(列表)
+task_name               任务名称
+plugin_id               插件id
+_id                     ObjectId
+start_date              任务开始时间
+task_recursion          扫描计划
+------------------------------------
+
+# VULNERABILITY_DB 漏洞集合
+------------------------------------
+scan_result             扫描结果
+target                  扫描对象
+task_id                 任务ID
+app_name                应用名称
+scan_date               扫描日期
+poc_name                插件名称
+vul_version             漏洞影响版本
+poc_type                漏洞类型
+task_name               任务名称
+plugin_id               插件ID
+tag                     标签
+_id                     ObjectId
+------------------------------------
+
+
+# CONFIG_DB 配置集合
+------------------------------------
+config_name             配置文件名称
+subdomain_dict          子域名字典
+poc_thread              pocsuite 线程
+poc_frequency           循环周期
+subdomain_thread        子域名线程
+port_list               默认端口扫描列表
+port_thread             端口扫描线程
+discovery_thread        资产发现功能线程
+username_dict           用户
+password_dict           密码
+auth_tester_thread      弱口令检测线程
+------------------------------------
+
+
+# DOMAIN_DB 服务集合
+------------------------------------
+domain                  主域名
+third_domain            三级域名扫描
+status                  扫描状态
+domain_name             域名名称
+date                    时间
+_id                     ObjectId
+------------------------------------
+
+
+# SUBDOMAIN_DB 服务集合
+------------------------------------
+date                    扫描日期
+domain                  主域名
+title                   子域名title
+_id                     ObjectId
+result                  解析IP
+subdomain               子域名
+domain_id               主域名ID
+------------------------------------
+
+# WEEKPASSWD_DB 服务集合
+------------------------------------
+date                    扫描日期
+type                    协议类型
+target                  检测对象
+task_name               所属任务
+username                账号
+password                密码
+task_id                 所属任务ID
+_id                     ObjectId
+------------------------------------
+
+# AUTH_DB 服务集合
+------------------------------------
+date                    任务日期
+target                  扫描对象
+task_name               任务名称
+status                  当前状态
+username                用户名
+password                密码
+week_count              弱口令数量
+type                    协议类型
+recursion               检测周期
+_id                     ObjectId
+------------------------------------
+
+
+# SERVER_DB 服务集合
+------------------------------------
+date                    扫描日期
+host                    主机
+asset_name              资产库
+asset_id                资产库ID
+port                    端口
+server                  服务
+version                 版本
+------------------------------------
+
+# SEARCH_DB 服务集合
+------------------------------------
+host                    主机
+asset_name              资产库
+asset_id                资产库ID
+port                    端口
+product
+name                    服务名
+extrainfo               其他信息
+cpe                     banner信息
+version                 版本
+script                  脚本
+------------------------------------

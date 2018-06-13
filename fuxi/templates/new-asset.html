@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block css %}
+{% endblock %}
+{% block content %}
+
+<main class="app-content">
+    <div class="app-title">
+        <div>
+            <h1><i class="fa fa-edit"></i> New Asset</h1>
+        </div>
+        <ul class="app-breadcrumb breadcrumb">
+            <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+            <li class="breadcrumb-item">Home</li>
+            <li class="breadcrumb-item"><a href="#">New Asset</a></li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="row">
+                    <div class="col-lg-2">
+
+                    </div>
+                    <div class="col-lg-8">
+                        <form class="form-horizontal">
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Asset Name <span class="text-danger">*</span></label>
+                                <div class="col-md-8">
+                                    <input class="form-control" name="asset_name" type="text" placeholder="Asset Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Host <span class="text-danger">*</span></label>
+                                <div class="col-md-8">
+                                    <textarea class="form-control" name="asset_host" rows="8" placeholder="Example:&#13;&#10;192.168.1.1&#13;&#10;192.168.1.0/24&#13;&#10;www.example.com"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Dept Name <span class="text-danger">*</span></label>
+                                <div class="col-md-8">
+                                   <input class="form-control" name="dept_name" type="text" placeholder="Dept Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Admin Name <span class="text-danger">*</span></label>
+                                <div class="col-md-8">
+                                   <input class="form-control" name="admin_name" type="text" placeholder="Admin Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Discover Option</label>
+                                <div class="toggle lg col-md-8">
+                                    <label>
+                                        <input type="checkbox" checked><span class="button-indecator"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="tile-footer">
+                            <button class="btn btn-primary " id="newAsset" type="button">Submit</button>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% block js %}
+    <script src="static/js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="static/js/plugins/select2.min.js"></script>
+    <script src="static/js/server/new-asset.js"></script>
+{% endblock %}
+{% endblock %}

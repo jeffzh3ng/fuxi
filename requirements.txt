@@ -1,0 +1,13 @@
+gevent
+Flask
+pocsuite
+pymongo
+python-nmap
+apscheduler
+multiprocessing
+dnspython
+ipaddr
+bs4
+requests
+pexpect
+MySQL-python

@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+{% block css %}
+{% endblock %}
+{% block content %}
+<main class="app-content">
+    <div class="app-title">
+        <div>
+            <h1><i class="fa fa-th-list"></i>&nbsp;New Authentication Checker</h1>
+            <p></p>
+        </div>
+        <ul class="app-breadcrumb breadcrumb side">
+            <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+            <li class="breadcrumb-item">Home</li>
+            <li class="breadcrumb-item active"><a href="#">New Authentication Checker</a></li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
+                    <div class="bs-component">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#http_auth">HTTP Auth</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#ssh_auth">SSH Auth</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#mysql_auth">MySQL Auth</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#redis_auth">Redis Auth</a></li>
+                            <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Advanced</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item"  role="button" data-toggle="modal" href="#" data-target="#editUsername">Default Username</a>
+                                    <a class="dropdown-item"  role="button" data-toggle="modal" href="#" data-target="#editPassword">Default Password</a>
+                                    <div class="dropdown-divider"></div><a class="dropdown-item" href="advanced-option">Scan Thread</a>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="modal fade" id="editUsername" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="myModalLabel">
+                                            Default Username
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body" >
+                                        <form class="form-horizontal" role="form">
+
+                                            <div class="form-group">
+                                                <label class="control-label no-padding-right">One username per line</label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One username per line" rows="8" name="edit_username_val">{{ username_list }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"  data-dismiss="modal" aria-hidden="true">Cancel
+                                                </button>
+                                                <button class="btn btn-primary username-update" type="button">
+                                                    <span>Submit</span> <i class="fa fa-send m-l-10"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div>
+
+                        <div class="modal fade" id="editPassword" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="myModalLabel">
+                                            Default Password
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body" >
+                                        <form class="form-horizontal" role="form">
+
+                                            <div class="form-group">
+                                                <label class="control-label no-padding-right">One password per line</label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One password per line" rows="8" name="edit_password_val">{{ password_list }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"  data-dismiss="modal" aria-hidden="true">Cancel
+                                                </button>
+                                                <button class="btn btn-primary password-update" type="button">
+                                                    <span>Submit</span> <i class="fa fa-send m-l-10"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div>
+
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade active show" id="http_auth">
+                                <div class="col-lg-10">
+                                    <br>
+                                    <p class="text-primary col-md-7">* The HTTP Authentication Tester tool which allows you to perform a dictionary attack against login pages that use either HTTP or form-based authentication.</p
+                                    <br>
+                                    <form class="form-horizontal">
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-2">Task Name <span class="text-danger">*</span></label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="http_task_name" type="text" placeholder="Task Name">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-2">Auth Scheme <span class="text-danger">*</span></label>
+                                            <div class="col-md-6">
+                                                <select class="form-control" title="Auth Scheme" name="http_auth_select_id" id="http_auth_select_id"  onchange="showSelect();">
+                                                    <option value="0">Basic Access Authentication</option>
+                                                    <option value="1">GET HTTP Authentication(not completed)</option>
+                                                    <option value="2">POST HTTP Authentication(not completed)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-2">Recursion <span class="text-danger">*</span></label>
+                                            <div class="col-md-6">
+                                                <select class="form-control" title="Recursion" name="http_recursion" id="http_recursion_id">
+                                                    <option value="0">Once</option>
+                                                    <option value="1">Every day</option>
+                                                    <option value="7">Every week</option>
+                                                    <option value="30">Every month</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-6"></div>
+                                        <div class="form-group row" id="basic_data_inner">
+                                            <label class='control-label col-md-2'>Target<span class='text-danger'>*</span></label>
+                                            <div class='col-md-6'>
+                                                <textarea class='form-control' rows='6' placeholder='Example: http://192.168.1.1 (One target per line)' name='basic_auth_data'></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row" id="get_data_inner">
+
+                                        </div>
+
+                                        <div class="form-group row" id="post_data_inner">
+
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <label class="control-label no-padding-right">Username<span class="text-danger">*</span></label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One username per line" rows="6" name="http_username_val">{{ username_list }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="control-label no-padding-right">Password<span class="text-danger">*</span></label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One password per line" rows="6" name="http_password_val">{{ password_list }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div class="tile-footer">
+                                        <button class="btn btn-primary new_http_test" type="button">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="ssh_auth">
+                                <div class="col-lg-10">
+                                    <br>
+                                    <p class="text-primary col-md-6">* It is illegal to perform this attack on any SSH server that doesn't belong to you.</p>
+                                    <br>
+                                    <form class="form-horizontal">
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-2">Task Name <span class="text-danger">*</span></label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="ssh_task_name" type="text" placeholder="Task Name">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-2">Recursion <span class="text-danger">*</span></label>
+                                            <div class="col-md-6">
+                                                <select class="form-control" title="Recursion" name="ssh_recursion" id="ssh_recursion_id">
+                                                    <option value="0">Once</option>
+                                                    <option value="1">Every day</option>
+                                                    <option value="7">Every week</option>
+                                                    <option value="30">Every month</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class='control-label col-md-2'>Target<span class='text-danger'>*</span></label>
+                                            <div class='col-md-6'>
+                                                <textarea class='form-control' rows='6' placeholder='Example:&#13;&#10;192.168.1.1&#13;&#10;192.168.1.1/24&#13;&#10;192.168.1.1:2233&#13;&#10;(One target per line)' name='ssh_target_data'></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <label class="control-label no-padding-right">Username<span class="text-danger">*</span></label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One username per line" rows="6" name="ssh_username_val">{{ username_list }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="control-label no-padding-right">Password<span class="text-danger">*</span></label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One password per line" rows="6" name="ssh_password_val">{{ password_list }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                    <div class="tile-footer">
+                                        <button class="btn btn-primary new_ssh_test" type="button">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="mysql_auth">
+                                <div class="col-lg-10">
+                                    <br>
+                                    <p class="text-primary col-md-6">* MySQL authentication tester.</p>
+                                    <br>
+                                    <form class="form-horizontal">
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-2">Task Name <span class="text-danger">*</span></label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="mysql_task_name" type="text" placeholder="Task Name">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-2">Recursion <span class="text-danger">*</span></label>
+                                            <div class="col-md-6">
+                                                <select class="form-control" title="Recursion" name="mysql_recursion" id="mysql_recursion_id">
+                                                    <option value="0">Once</option>
+                                                    <option value="1">Every day</option>
+                                                    <option value="7">Every week</option>
+                                                    <option value="30">Every month</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class='control-label col-md-2'>Target<span class='text-danger'>*</span></label>
+                                            <div class='col-md-6'>
+                                                <textarea class='form-control' rows='6' placeholder='Example:&#13;&#10;192.168.1.1&#13;&#10;192.168.1.1/24&#13;&#10;192.168.1.1:3366&#13;&#10;(One target per line)' name='mysql_target_data'></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <label class="control-label no-padding-right">Username<span class="text-danger">*</span></label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One username per line" rows="6" name="mysql_username_val">{{ username_list }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="control-label no-padding-right">Password<span class="text-danger">*</span></label>
+                                                <div>
+                                                    <textarea class="form-control" placeholder="One password per line" rows="6" name="mysql_password_val">{{ password_list }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                    <div class="tile-footer">
+                                        <button class="btn btn-primary new_mysql_test" type="button">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="redis_auth">
+                                <div class="col-lg-10">
+                                    <br>
+                                    <p class="text-primary col-md-6">* Redis is unprotected without a password set up.</p>
+                                    <br>
+                                    <form class="form-horizontal">
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-2">Task Name <span class="text-danger">*</span></label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="redis_task_name" type="text" placeholder="Task Name">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-2">Recursion <span class="text-danger">*</span></label>
+                                            <div class="col-md-6">
+                                                <select class="form-control" title="Recursion" name="redis_recursion" id="redis_recursion_id">
+                                                    <option value="0">Once</option>
+                                                    <option value="1">Every day</option>
+                                                    <option value="7">Every week</option>
+                                                    <option value="30">Every month</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class='control-label col-md-2'>Target<span class='text-danger'>*</span></label>
+                                            <div class='col-md-6'>
+                                                <textarea class='form-control' rows='6' placeholder='Example:&#13;&#10;192.168.1.1&#13;&#10;192.168.1.1/24&#13;&#10;192.168.1.1:6379&#13;&#10;(One target per line)' name='redis_target_data'></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class='control-label col-md-2'>Password<span class='text-danger'>*</span></label>
+                                            <div class='col-md-6'>
+                                                <textarea class="form-control" placeholder="One password per line" rows="6" name="redis_password_val">{{ password_list }}</textarea>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                    <div class="tile-footer">
+                                        <button class="btn btn-primary new_redis_test" type="button">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+{% block js %}
+    <!-- Data table plugin-->
+    <script src="static/js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="static/js/server/new-auth-tester.js"></script>
+
+{% endblock %}
