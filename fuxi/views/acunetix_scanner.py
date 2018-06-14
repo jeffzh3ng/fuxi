@@ -70,7 +70,11 @@ def acunetix_view():
 def acunetix_tasks():
     # scanner view
     if request.method == "GET":
-        tasks_info = AcunetixScanner().get_all()
+        try:
+            tasks_info = AcunetixScanner().get_all()
+        except Exception as e:
+            print(e)
+            tasks_info = ''
         return render_template('acunetix-tasks.html', tasks_info=tasks_info)
     else:
         if request.form.get('source') == "delete_scan":

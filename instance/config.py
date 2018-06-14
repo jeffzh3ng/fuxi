@@ -23,7 +23,7 @@ class Config:
     UPDATE_URL = "https://fuxi.hook.ga/update"  # check update
     VERSION = '1.2.0'  # scanner version
     AWVS_URL = 'https://192.168.56.2:3443'  # Acunetix Web Vulnerability Scanner Url
-    AWVS_API_KEY = ""  # Acunetix Web Vulnerability Scanner API Key
+    AWVS_API_KEY = "1986ad8c0a5b3df4d7028d5f3c06e936cb88c477b0a844e5d8582a112fc817e35"  # Acunetix Web Vulnerability Scanner API Key
 
 
 class ProductionConfig(Config):
