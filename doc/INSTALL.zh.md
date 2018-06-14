@@ -114,10 +114,11 @@ security:
   authorization: "enabled"
 ```
 
-重启数据库服务
+重启数据库服务，设置开机启动
 
 ```bash
 sudo service mongod restart
+sudo systemctl enable mongod.service
 ```
 
 测试认证连接
@@ -191,13 +192,14 @@ class ProductionConfig(Config):
 ### 运行测试
 
 ```bash
+sudo service mongod restart
 cd fuxi-scanner
 python migration/start.py
 python fuxi_scanner.py
 * Running on http://127.0.0.1:5000
 ```
 
-未报错，说明可以正常运行，打开浏览器访问`http://127.0.0.1:5000`
+一定要记得开启数据库，未报错，说明可以正常运行，打开浏览器访问`http://127.0.0.1:5000`
 
 ### 后台运行
 

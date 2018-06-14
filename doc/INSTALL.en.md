@@ -128,6 +128,7 @@ security:
 
 ```bash
 sudo service mongod restart
+sudo systemctl enable mongod.service
 ```
 
 To authenticate after connecting
@@ -197,6 +198,7 @@ class ProductionConfig(Config):
 ### Running tests
 
 ```bash
+sudo service mongod restart
 cd fuxi-scanner
 python migration/start.py
 python fuxi_scanner.py
