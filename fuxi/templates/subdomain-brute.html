@@ -46,7 +46,7 @@
                                     <td>
                                         <a href="subdomain-list?domain={{ i['_id'] }}">{{ i['domain_name'] }}</a>
                                     </td>
-                                    <td>{{ i['domain'][0] }}</td>
+                                    <td>{{ i['domain'][0] }},{{ i['domain'][1] }},{{ i['domain'][2] }}...</td>
                                     <td>{{ i['status'] }}</td>
                                     <td>{{ i['date'] }}</td>
                                     <td class="text-center">
@@ -91,7 +91,7 @@
                                             <div class="form-group">
                                                 <label class="control-label no-padding-right">Domain<span class="text-danger">*</span></label>
                                                 <div>
-                                                    <input type="text" class="form-control" id="domain" name="domain_val" placeholder="Task Name">
+                                                    <textarea type="text" class="form-control" id="domain" name="domain_val" placeholder="Domain Name"></textarea>
                                                 </div>
                                             </div>
 

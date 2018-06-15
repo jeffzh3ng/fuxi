@@ -58,15 +58,16 @@ def subdomain_view():
     # new domain
     elif request.method == 'POST':
         domain_name_val = request.form.get('domain_name_val')
-        domain_val = request.form.get('domain_val').replace('\r', '').split('\n', -1),
+        domain_val = request.form.get('domain_val').split('\n'),
         third_domain = request.form.get('third_domain')
+        domain_list = list(domain_val)[0]
         if third_domain == "true":
             scan_option = 'Enable'
         else:
             scan_option = 'Disallow'
         domain_data = {
             'domain_name': domain_name_val,
-            'domain': domain_val[0],
+            'domain': domain_list,
             "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
             'third_domain': scan_option,
             'status': "Preparation",
@@ -74,7 +75,7 @@ def subdomain_view():
         domain_id = connectiondb(domain_db).insert_one(domain_data).inserted_id
         if domain_id:
             # async domain brute
-            t1 = Thread(target=domain_brute.start_domain_brute, args=(domain_val[0], domain_id))
+            t1 = Thread(target=domain_brute.start_domain_brute, args=(domain_list, domain_id))
             t1.start()
             return "success"
 
