@@ -67,6 +67,40 @@ $(function () {
             })
         }
     });
+
+    $("#awvs-scan").click(function () {
+        const task_name = $('[name="awvs_task_name"]').val();
+        const target_addr = $('[name="awvs_target"]').val();
+        const scan_type = $('[name="awvs_scan_type"]').val();
+        const description_val = $('[name="awvs_desc_val"]').val();
+        if (!task_name || !target_addr || !scan_type) {
+            swal("Warning", "Please check the input!", "error");
+        } else {
+            $.post('/acunetix-scanner', {
+                "task_name": task_name,
+                "target_addr": target_addr,
+                "scan_type": scan_type,
+                "description_val": description_val,
+                "source": "new_scan"
+            }, function (e) {
+                if (e === 'success') {
+                    swal({
+                            title: "Task added successfully!",
+                            text: "",
+                            type: "success",
+                            confirmButtonColor: "#41b883",
+                            confirmButtonText: "ok",
+                            closeOnConfirm: false
+                        },
+                        function () {
+                            location.href = "/acunetix-scanner";
+                        });
+                } else {
+                    swal("Error", "Something wrong", "error");
+                }
+            })
+        }
+    });
 });
 
 function delete_domain(nid){
@@ -105,6 +139,22 @@ function get_domain_host(nid){
         data: data,
         success: function(respond) {
             $('#scan_target_list').val(respond);
+        },
+        error: function(xhr, type) {
+        }
+    });
+}
+
+function get_domain_awvs(nid){
+    const data = {
+        "subdomain": nid,
+    };
+    $.ajax({
+        type: 'GET',
+        url: '/subdomain-list',
+        data: data,
+        success: function(respond) {
+            $('#awvs_target').val(respond);
         },
         error: function(xhr, type) {
         }

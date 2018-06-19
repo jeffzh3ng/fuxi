@@ -51,8 +51,13 @@
                                     <td>{{ i['date'] }}</td>
                                     <td class="text-center">
                                         <div class="hidden-sm hidden-xs action-buttons">
-                                            <a onclick="get_domain_host('{{ i['_id'] }}')" role="button" href="#" title="New Scan" data-toggle="modal" data-target="#newScan">
+                                            <a onclick="get_domain_host('{{ i['_id'] }}')" role="button" href="#" title="New Vul Scan" data-toggle="modal" data-target="#newScan">
                                                 <i class="fa fa-bug"></i>
+                                            </a>
+                                            &nbsp;
+                                            &nbsp;
+                                            <a onclick="get_domain_awvs('{{ i['_id'] }}')" role="button" href="#" title="Acunetix Scanner" data-toggle="modal" data-target="#newAWVS">
+                                                <i class="fa fa-heartbeat"></i>
                                             </a>
                                             &nbsp;
                                             &nbsp;
@@ -112,6 +117,64 @@
                             </div><!-- /.modal-dialog -->
                         </div><!-- /.modal -->
                     </div>
+
+                    <div class="modal" id="newAWVS" >
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Acunetix Scanner</h5>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Task Name <span class="text-danger">*</span></label>
+                                            <div>
+                                                <input type="text" class="form-control" id="awvs_task_name" name="awvs_task_name" placeholder="">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Target <span class="text-danger">*</span></label>
+                                            <div>
+                                                <textarea class="form-control" id="awvs_target" name="awvs_target" rows="4" placeholder="One url per line:&#13;&#10;http://example.com&#13;&#10;http://example.com"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Scan Type <span class="text-danger">*</span></label>
+                                            <div >
+                                                <select class="form-control col-md-7" id="awvs_scan_type" title="Scan Type" name="awvs_scan_type">
+                                                    <option value="0">Full Scan</option>
+                                                    <option value="1">High Risk Vulnerabilities</option>
+                                                    <option value="2">Cross-site Scripting Vulnerabilities</option>
+                                                    <option value="3">SQL Injection Vulnerabilities</option>
+                                                    <option value="4">Weak Passwords</option>
+                                                    <option value="5">Crawl Only</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="hr hr-16 hr-dotted"></div>
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Description </label>
+                                            <div>
+                                                <input type="text" class="form-control" id="awvs_desc_val" name="awvs_desc_val" placeholder="">
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"  data-dismiss="modal" aria-hidden="true">Cancel
+                                    </button>
+                                    <button class="btn btn-primary" id="awvs-scan" type="button">
+                                        <span>OK</span>
+                                    </button>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
 
                     <div class="modal fade" id="newScan" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><!-- /scan-modal -->
                         <div class="modal-dialog">
