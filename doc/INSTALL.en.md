@@ -19,8 +19,8 @@ This guide should get you going on `Ubuntu` system.
 sudo apt update
 sudo apt install python python-dev python-pip python-setuptools nmap hydra curl
 cd fuxi-scanner
-sudo pip install --upgrade pip
-sudo pip install -r requirements.txt -U
+sudo python -m pip install pip==9.0.3
+sudo pip install -r requirements.txt
 ```
 
 ### Install MongoDB Community Edition (Ubuntu)

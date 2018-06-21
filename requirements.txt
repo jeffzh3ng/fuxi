@@ -4,7 +4,6 @@ pocsuite
 pymongo
 python-nmap
 apscheduler
-multiprocessing
 dnspython
 ipaddr
 bs4
