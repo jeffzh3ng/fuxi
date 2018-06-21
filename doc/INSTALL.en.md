@@ -17,7 +17,7 @@ This guide should get you going on `Ubuntu` system.
 
 ```bash
 sudo apt update
-sudo apt install python python-dev python-pip python-setuptools nmap libmysqlclient-dev curl
+sudo apt install python python-dev python-pip python-setuptools nmap hydra curl
 cd fuxi-scanner
 sudo pip install --upgrade pip
 sudo pip install -r requirements.txt -U

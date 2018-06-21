@@ -17,7 +17,7 @@ git clone --depth 1 https://github.com/jeffzh3ng/Fuxi-Scanner.git fuxi-scanner
 
 ```bash
 sudo apt update
-sudo apt install python python-dev python-pip python-setuptools nmap libmysqlclient-dev curl
+sudo apt install python python-dev python-pip python-setuptools nmap hydra curl
 cd fuxi-scanner
 sudo pip install --upgrade pip
 sudo pip install -r requirements.txt -U
