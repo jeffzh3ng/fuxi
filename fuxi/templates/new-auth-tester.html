@@ -57,7 +57,7 @@
                                 <div class="col-md-9">
                                     <select multiple="multiple" size="7" name="service_list" title="Protocols">
                                         {% for a in protocols %}
-                                            <option value="{{ a }}">{{ a }}</option>
+                                            <option value="{{ a }}">{{ a | upper }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>

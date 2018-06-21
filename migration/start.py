@@ -46,7 +46,12 @@ def config():
         'username_dict': ['admin', 'root', 'administrators'],
         'password_dict': ['123456', 'password', '12345678', 'admin', 'admin123'],
         'auth_tester_thread': 100,
-        'discovery_time': "11:00:00"
+        'discovery_time': "11:00:00",
+        'auth_service': ['asterisk', 'cisco', 'cisco-enable', 'cvs', 'firebird', 'ftp', 'ftps', 'http-proxy',
+                         'http-proxy-urlenum', 'icq', 'imap', 'irc', 'ldap2', 'mssql', 'mysql', 'nntp',
+                         'oracle-listener', 'oracle-sid', 'pcanywhere', 'pcnfs', 'pop3', 'postgres', 'rdp', 'redis',
+                         'rexec', 'rlogin', 'rsh', 's7-300', 'sip', 'smb', 'smtp', 'smtp-enum', 'snmp', 'socks5',
+                         'ssh', 'sshkey', 'svn', 'teamspeak', 'telnet', 'vmauthd', 'vnc', 'xmpp'],
     }
     connectiondb(config_db).insert_one(config_data)
 

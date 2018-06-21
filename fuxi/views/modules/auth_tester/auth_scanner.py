@@ -53,9 +53,9 @@ class AuthCrack:
         tmp_result = []
         args = self.args
         connectiondb(auth_db).update_one({"_id": self.task_id}, {"$set": {"status": "Processing"}})
-        # Filter online host
-        pool_a = Pool(processes=self.processes)
         for service in self.service_list:
+            # Filter online host
+            pool_a = Pool(processes=self.processes)
             for target in self.target_list:
                 if ":" in target:
                     target_l = target.split(":")
@@ -65,14 +65,13 @@ class AuthCrack:
                         target = ''.join(target_l)
                         args = self.args + ' -s %s' % port
                 tmp_result.append(pool_a.apply_async(host_check, (target, service.lower(), args)))
-        pool_a.close()
-        pool_a.join()
-        for res_a in tmp_result:
-            if res_a.get():
-                self.online_target.append(res_a.get())
-        # start crack
-        pool_b = Pool(processes=self.processes)
-        for service in self.service_list:
+            pool_a.close()
+            pool_a.join()
+            for res_a in tmp_result:
+                if res_a.get():
+                    self.online_target.append(res_a.get())
+            # start crack
+            pool_b = Pool(processes=self.processes)
             for target in self.online_target:
                 if ":" in target:
                     target_l = target.split(":")
@@ -85,8 +84,9 @@ class AuthCrack:
                     for password in self.password_list:
                         self.result.append(pool_b.apply_async(hydra_scanner, (target, service.lower(), username,
                                                                               password, args)))
-        pool_b.close()
-        pool_b.join()
+            pool_b.close()
+            pool_b.join()
+            self.online_target = []
         for res_b in self.result:
             if res_b.get():
                 target = res_b.get()['target']
@@ -97,7 +97,6 @@ class AuthCrack:
         connectiondb(auth_db).update_one({"_id": self.task_id}, {"$set": {
             "status": "Completed",
             "week_count": self.week_count,
-            "online_hosts": len(self.online_target)
         }})
 
     def save_result(self, target, service, username, password):

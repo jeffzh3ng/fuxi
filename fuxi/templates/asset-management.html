@@ -218,7 +218,7 @@
                                             <div>
                                                 <select multiple="multiple" size="6" name="auth_service_list" title="Plugin Select">
                                                     {% for a in protocols %}
-                                                        <option value="{{ a }}">{{ a }}</option>
+                                                        <option value="{{ a }}">{{ a | upper }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>

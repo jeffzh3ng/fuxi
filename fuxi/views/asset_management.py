@@ -104,17 +104,12 @@ def asset_view():
                 print(e)
         else:
             # asset list(view)
+            config_info = connectiondb(config_db).find_one({"config_name": config_name})
             asset_info = connectiondb(asset_db).find()
             plugin_info = connectiondb(plugin_db).find()
-            protocols = ['Asterisk', 'AFP', 'CiscoAAA', 'Ciscoauth', 'Ciscoenable', 'CVS', 'Firebird', 'FTP',
-                         'HTTP-FORM-GET', 'HTTP-FORM-POST', 'HTTP-GET', 'HTTP-HEAD', 'HTTP-POST', 'HTTP-PROXY',
-                         'HTTPS-FORM-GET', 'HTTPS-FORM-POST', 'HTTPS-GET', 'HTTPS-HEAD', 'HTTPS-POST', 'HTTP-Proxy',
-                         'ICQ', 'IMAP', 'IRC', 'LDAP', 'MS-SQL', 'MYSQL', 'NCP', 'NNTP', 'OracleListener', 'OracleSID',
-                         'Oracle', 'PC-Anywhere', 'PCNFS', 'POP3', 'POSTGRES', 'RDP', 'Rexec', 'Rlogin', 'Rsh', 'RTSP',
-                         'SAP', 'SIP', 'SMB', 'SMTP', 'SMTPEnum', 'SNMP', 'SOCKS5', 'SSH', 'SSHKEY', 'Subversion',
-                         'Teamspeak', 'Telnet', 'VMware-Auth', 'VNC', 'XMPP']
-            username_list = '\n'.join(connectiondb(config_db).find_one({"config_name": config_name})['username_dict'])
-            password_list = '\n'.join(connectiondb(config_db).find_one({"config_name": config_name})['password_dict'])
+            username_list = '\n'.join(config_info['username_dict'])
+            password_list = '\n'.join(config_info['password_dict'])
+            protocols = config_info['auth_service']
             return render_template("asset-management.html", asset_info=asset_info, plugin_info=plugin_info,
                                    protocols=protocols, username_list=username_list, password_list=password_list)
 
@@ -191,15 +186,11 @@ def asset_server():
 @asset_management.route('/search', methods=['GET', 'POST'])
 @login_check
 def search_view():
-    username_list = '\n'.join(connectiondb(config_db).find_one({"config_name": config_name})['username_dict'])
-    password_list = '\n'.join(connectiondb(config_db).find_one({"config_name": config_name})['password_dict'])
+    config_info = connectiondb(config_db).find_one({"config_name": config_name})
+    username_list = '\n'.join(config_info['username_dict'])
+    password_list = '\n'.join(config_info['password_dict'])
     plugin_info = connectiondb(plugin_db).find()
-    protocols = ['Asterisk', 'AFP', 'CiscoAAA', 'Ciscoauth', 'Ciscoenable', 'CVS', 'Firebird', 'FTP', 'HTTP-FORM-GET',
-                 'HTTP-FORM-POST', 'HTTP-GET', 'HTTP-HEAD', 'HTTP-POST', 'HTTP-PROXY', 'HTTPS-FORM-GET',
-                 'HTTPS-FORM-POST', 'HTTPS-GET', 'HTTPS-HEAD', 'HTTPS-POST', 'HTTP-Proxy', 'ICQ', 'IMAP', 'IRC', 'LDAP',
-                 'MS-SQL', 'MYSQL', 'NCP', 'NNTP', 'OracleListener', 'OracleSID', 'Oracle', 'PC-Anywhere', 'PCNFS',
-                 'POP3', 'POSTGRES', 'RDP', 'Rexec', 'Rlogin', 'Rsh', 'RTSP', 'SAP', 'SIP', 'SMB', 'SMTP', 'SMTPEnum',
-                 'SNMP', 'SOCKS5', 'SSH', 'SSHKEY', 'Subversion', 'Teamspeak', 'Telnet', 'VMware-Auth', 'VNC', 'XMPP']
+    protocols = config_info['auth_service']
     if request.method == "GET":
         data = "Your search - \"\" - did not match any documents."
         return render_template('search.html', data=data, plugin_info=plugin_info, protocols=protocols)

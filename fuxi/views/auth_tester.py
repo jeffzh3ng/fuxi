@@ -27,12 +27,7 @@ def view_new_auth_tester():
     config_info = connectiondb(config_db).find_one({"config_name": config_name})
     username_list = "\n".join(config_info['username_dict'])
     password_list = "\n".join(config_info['password_dict'])
-    protocols = ['Asterisk', 'AFP', 'CiscoAAA', 'Ciscoauth', 'Ciscoenable', 'CVS', 'Firebird', 'FTP', 'HTTP-FORM-GET',
-                 'HTTP-FORM-POST', 'HTTP-GET', 'HTTP-HEAD', 'HTTP-POST', 'HTTP-PROXY', 'HTTPS-FORM-GET',
-                 'HTTPS-FORM-POST', 'HTTPS-GET', 'HTTPS-HEAD', 'HTTPS-POST', 'HTTP-Proxy', 'ICQ', 'IMAP', 'IRC', 'LDAP',
-                 'MS-SQL', 'MYSQL', 'NCP', 'NNTP', 'OracleListener', 'OracleSID', 'Oracle', 'PC-Anywhere', 'PCNFS',
-                 'POP3', 'POSTGRES', 'RDP', 'Rexec', 'Rlogin', 'Rsh', 'RTSP', 'SAP', 'SIP', 'SMB', 'SMTP', 'SMTPEnum',
-                 'SNMP', 'SOCKS5', 'SSH', 'SSHKEY', 'Subversion', 'Teamspeak', 'Telnet', 'VMware-Auth', 'VNC', 'XMPP']
+    protocols = config_info['auth_service']
     return render_template('new-auth-tester.html', username_list=username_list, password_list=password_list,
                            protocols=protocols)
 
@@ -127,4 +122,3 @@ def week_passwd_list():
         else:
             weekpasswd_data = connectiondb(weekpasswd_db).find({"tag": {"$ne": "delete"}})
             return render_template('week-passwd-list.html', weekpasswd_data=weekpasswd_data)
-
