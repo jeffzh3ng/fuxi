@@ -7,46 +7,50 @@
 
 import subprocess
 import threading
-import shlex
 
 
 class HydraScanner:
 
-    def __init__(self, target, service, username, password, args):
-        self.target = target
-        self.service = service
-        self.username = username
-        self.password = password
+    def __init__(self, args):
+        if '-s' in args:
+            self.target = args[-2] + ':' + args[args.index('-s') + 1]
+        else:
+            self.target = args[-2]
+        self.service = args[-1]
+        if '-l' in args:
+            self.username = args[args.index('-l') + 1]
+        else:
+            self.username = 'None'
+        if '-p' in args:
+            self.password = args[args.index('-p') + 1]
+        else:
+            self.password = 'None'
         self.args = args
-        self.result = {
-            "target": target,
-            "service": service,
-            "username": username,
-            "password": password,
-        }
-
-    def _args(self):
-        command = ['hydra', '-t 1', '-w 10', '-l', self.username,
-                   '-p', self.password, self.target, self.service]
-        command += shlex.split(self.args)
-        return command
 
     def scanner(self):
+        msg = '[*] ' + self.target + '  ' + self.service + '  ' + self.username + '  ' + self.password
+        print(msg)
         try:
-            hydra_out = subprocess.Popen(self._args(), stdout=subprocess.PIPE)
+            hydra_out = subprocess.Popen(self.args, stdout=subprocess.PIPE)
             output = hydra_out.stdout.read()
             time_out = threading.Timer(1200, hydra_out.kill)
             time_out.start()
             hydra_out.wait()
             time_out.cancel()
             if 'successfully' in output and "[" + self.service + "]" in output:
-                return self.result
+                result = {
+                    "target": self.target,
+                    "service": self.service,
+                    "username": self.username,
+                    "password": self.password,
+                }
+                return result
         except Exception as e:
             raise e
 
     def host_check(self):
         try:
-            hydra_out = subprocess.Popen(self._args(), stdout=subprocess.PIPE)
+            hydra_out = subprocess.Popen(self.args, stdout=subprocess.PIPE)
             output = hydra_out.stdout.read()
             time_out = threading.Timer(1200, hydra_out.kill)
             time_out.start()
