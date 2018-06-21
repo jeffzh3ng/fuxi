@@ -17,6 +17,16 @@ stop(){
     do
     kill -9 ${pid}
     done
+    hydra_scanner=`ps -ef | grep "hydra" | grep -v "$0" | grep -v "grep" | awk '{print $2}'`
+    for hydra_pid in ${hydra_scanner}
+    do
+    kill -9 ${hydra_pid}
+    done
+    nmap_scanner=`ps -ef | grep "nmap" | grep -v "$0" | grep -v "grep" | awk '{print $2}'`
+    for nmap_pid in ${nmap_scanner}
+    do
+    kill -9 ${nmap_pid}
+    done
 }
 
 case ${option} in

@@ -25,7 +25,7 @@
                         <tr class="text-center">
                             <th>Task Name</th>
                             <th>Target</th>
-                            <th>Type</th>
+                            <th>Service</th>
                             <th>Username</th>
                             <th>Password</th>
                             <th>Date</th>
@@ -35,13 +35,9 @@
                         <tbody>
                         {% for i in weekpasswd_data %}
                             <tr class="text-center">
-                                <td>
-                                    {{ i['task_name'] }}
-                                </td>
-                                <td>
-                                    <a href="{{ i['target'] }}" target="_blank">{{ i['target'] }}</a>
-                                </td>
-                                <td>{{ i['type'] }}</td>
+                                <td>{{ i['task_name'] }}</td>
+                                <td>{{ i['target'] }}</td>
+                                <td>{{ i['service'] }}</td>
                                 <td>{{ i['username'] }}</td>
                                 <td>{{ i['password'] }}</td>
                                 <td>{{ i['date'] }}</td>

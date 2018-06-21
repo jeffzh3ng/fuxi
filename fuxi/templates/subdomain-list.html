@@ -43,11 +43,7 @@
                         <td>{{ i['result'][0] }}</td>
                         <td>{{ i['date'] }}</td>
                         <td class="text-center">
-                            <a onclick="vul_result('{{ i['_id'] }}')"  role="button" data-target="#vulResult" data-toggle="modal" href="#" title="result" >
-                                <i class="ace-icon fa fa-file-archive-o bigger-130"></i>
-                            </a>
-                            &nbsp;
-                            <a href="vulnerability?delete={{ i['_id'] }}" title="delete" >
+                            <a href="sudomain-list?delete={{ i['_id'] }}" title="delete" >
                                 <i class="fa fa-trash-o"></i>
                             </a>
                         </td>

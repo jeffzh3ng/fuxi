@@ -56,9 +56,9 @@ You can scan the vulnerability by searching and filtering out specific services
 
 ### Authentication Tester
 
-This's a login cracker that supports many protocols to attack (HTTP Basic Auth, SSH, MySQL, Redis).
+This is an auth tester with [hydra](https://github.com/vanhauser-thc/thc-hydra)
 
-The target can be IP, network segment or URL.
+Currently this tool supports the following protocols: Asterisk, AFP, Cisco AAA, Cisco auth, Cisco enable, CVS, Firebird, FTP, HTTP-FORM-GET, HTTP-FORM-POST, HTTP-GET, HTTP-HEAD, HTTP-POST, HTTP-PROXY, HTTPS-FORM-GET, HTTPS-FORM-POST, HTTPS-GET, HTTPS-HEAD, HTTPS-POST, HTTP-Proxy, ICQ, IMAP, IRC, LDAP, MS-SQL, MYSQL, NCP, NNTP, Oracle Listener, Oracle SID, Oracle, PC-Anywhere, PCNFS, POP3, POSTGRES, RDP, Rexec, Rlogin, Rsh, RTSP, SAP/R3, SIP, SMB, SMTP, SMTP Enum, SNMP v1+v2+v3, SOCKS5, SSH (v1 and v2), SSHKEY, Subversion, Teamspeak (TS2), Telnet, VMware-Auth, VNC and XMPP. (55)
 
 ![fuxi_auth_new_scan.png](doc/images/fuxi_auth_new_scan.png)
 

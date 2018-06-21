@@ -62,7 +62,10 @@
 
 ### 认证安全检测
 
-目前支持 `HTTP Basic Auth` 协议、`SSH` 协议、`MySQL`协议以及`Redis`协议暴力猜解
+后端调用[hydra](https://github.com/vanhauser-thc/thc-hydra)进行扫描，目前支持55种常见协议：
+
+Asterisk, AFP, Cisco AAA, Cisco auth, Cisco enable, CVS, Firebird, FTP, HTTP-FORM-GET, HTTP-FORM-POST, HTTP-GET, HTTP-HEAD, HTTP-POST, HTTP-PROXY, HTTPS-FORM-GET, HTTPS-FORM-POST, HTTPS-GET, HTTPS-HEAD, HTTPS-POST, HTTP-Proxy, ICQ, IMAP, IRC, LDAP, MS-SQL, MYSQL, NCP, NNTP, Oracle Listener, Oracle SID, Oracle, PC-Anywhere, PCNFS, POP3, POSTGRES, RDP, Rexec, Rlogin, Rsh, RTSP, SAP/R3, SIP, SMB, SMTP, SMTP Enum, SNMP v1+v2+v3, SOCKS5, SSH (v1 and v2), SSHKEY, Subversion, Teamspeak (TS2), Telnet, VMware-Auth, VNC and XMPP.
+
 扫描任务周期可以选择单次、每日、周及每月，扫描对象可以是单个 IP、网段或者 Url
 
 ![fuxi_auth_new_scan.png](images/fuxi_auth_new_scan.png)

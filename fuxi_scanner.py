@@ -10,7 +10,7 @@ from flask import Flask
 from fuxi.app import app
 from gevent.pywsgi import WSGIServer
 from fuxi.views.modules.scanner.poc_scanner import PoCScannerLoop
-from fuxi.views.modules.auth_tester.auth_crack import AuthTesterLoop
+from fuxi.views.modules.auth_tester.auth_scanner import AuthTesterLoop
 from fuxi.views.modules.discovery.asset_discovery import DiscoveryLoop
 from instance import config
 

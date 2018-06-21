@@ -147,7 +147,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="control-label no-padding-right">Plugin Select <span class="text-danger">*</span></label>
+                                            <label class="control-label no-padding-right">Plugins Select <span class="text-danger">*</span></label>
                                             <div>
                                                 <select multiple="multiple" size="6" name="plugin_list" title="Plugin Select">
                                                     {% for a in plugin_info %}
@@ -189,15 +189,14 @@
                                         <div class="form-group">
                                             <label class="control-label no-padding-right">Task Name <span class="text-danger">*</span></label>
                                             <div>
-                                                <input type="text" class="form-control" name="auth_taskname_val" placeholder="Task Name">
+                                                <input type="text" class="form-control" name="auth_task_name" placeholder="Task Name">
                                             </div>
                                         </div>
 
-                                        <div class="space-6"></div>
                                         <div class="form-group">
                                             <label class="control-label no-padding-right">Recursion</label>
                                             <div>
-                                                <select class="form-control" id="auth_recursion" title="Recursion" name="auth_recursion">
+                                                <select class="form-control" id="form-field-plan" title="Recursion" name="auth_recursion">
                                                     <option value="0">Once</option>
                                                     <option value="1">Every day</option>
                                                     <option value="7">Every week</option>
@@ -207,13 +206,20 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="control-label no-padding-right">Auth Scheme</label>
+                                            <label class="control-label no-padding-right">Args</label>
                                             <div>
-                                                <select class="form-control" id="auth_type" title="type" name="auth_type">
-                                                    <option value="basic_auth">HTTP Basic Access Auth</option>
-                                                    <option value="ssh_auth">SSH Auth</option>
-                                                    <option value="mysql_auth">MySQL Auth</option>
-                                                    <option value="redis_auth">Redis Auth</option>
+                                                <input class="form-control" name="auth_args" title="Args" placeholder=""/>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-6"></div>
+                                        <div class="form-group">
+                                            <label class="control-label no-padding-right">Protocols Select <span class="text-danger">*</span></label>
+                                            <div>
+                                                <select multiple="multiple" size="6" name="auth_service_list" title="Plugin Select">
+                                                    {% for a in protocols %}
+                                                        <option value="{{ a }}">{{ a }}</option>
+                                                    {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
@@ -230,13 +236,13 @@
                                             <div class="col-md-6">
                                                 <label class="control-label no-padding-right">Username<span class="text-danger">*</span></label>
                                                 <div>
-                                                    <textarea class="form-control" placeholder="One username per line" rows="6" name="username_val">{{ username_list }}</textarea>
+                                                    <textarea class="form-control" placeholder="One username per line" rows="6" name="auth_username_list">{{ username_list }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="control-label no-padding-right">Password<span class="text-danger">*</span></label>
                                                 <div>
-                                                    <textarea class="form-control" placeholder="One password per line" rows="6" name="password_val">{{ password_list }}</textarea>
+                                                    <textarea class="form-control" placeholder="One password per line" rows="6" name="auth_password_list">{{ password_list }}</textarea>
                                                 </div>
                                             </div>
                                         </div>

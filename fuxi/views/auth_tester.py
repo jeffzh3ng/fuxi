@@ -12,7 +12,7 @@ from bson import ObjectId
 from lib.mongo_db import connectiondb, db_name_conf
 from fuxi.views.authenticate import login_check
 from instance import config_name
-from fuxi.views.modules.auth_tester.auth_crack import AuthCrack
+from fuxi.views.modules.auth_tester.auth_scanner import AuthCrack
 
 auth_tester = Blueprint('auth_tester', __name__)
 auth_db = db_name_conf()['auth_db']
@@ -27,82 +27,47 @@ def view_new_auth_tester():
     config_info = connectiondb(config_db).find_one({"config_name": config_name})
     username_list = "\n".join(config_info['username_dict'])
     password_list = "\n".join(config_info['password_dict'])
-    return render_template('new-auth-tester.html', username_list=username_list, password_list=password_list)
+    protocols = ['Asterisk', 'AFP', 'CiscoAAA', 'Ciscoauth', 'Ciscoenable', 'CVS', 'Firebird', 'FTP', 'HTTP-FORM-GET',
+                 'HTTP-FORM-POST', 'HTTP-GET', 'HTTP-HEAD', 'HTTP-POST', 'HTTP-PROXY', 'HTTPS-FORM-GET',
+                 'HTTPS-FORM-POST', 'HTTPS-GET', 'HTTPS-HEAD', 'HTTPS-POST', 'HTTP-Proxy', 'ICQ', 'IMAP', 'IRC', 'LDAP',
+                 'MS-SQL', 'MYSQL', 'NCP', 'NNTP', 'OracleListener', 'OracleSID', 'Oracle', 'PC-Anywhere', 'PCNFS',
+                 'POP3', 'POSTGRES', 'RDP', 'Rexec', 'Rlogin', 'Rsh', 'RTSP', 'SAP', 'SIP', 'SMB', 'SMTP', 'SMTPEnum',
+                 'SNMP', 'SOCKS5', 'SSH', 'SSHKEY', 'Subversion', 'Teamspeak', 'Telnet', 'VMware-Auth', 'VNC', 'XMPP']
+    return render_template('new-auth-tester.html', username_list=username_list, password_list=password_list,
+                           protocols=protocols)
 
 
 @auth_tester.route('/auth-tester', methods=['POST'])
 @login_check
 def new_auth_tester():
     # create new task
-    username_list = request.form.get('username_val').split('\n')
-    password_list = request.form.get('password_val').split('\n')
-    task_name = time.strftime("%y%m%d", time.localtime()) + "_" + request.form.get('task_name')
-    target_list = request.form.get('target_val').split('\n')
-    recursion = int(request.form.get('recursion'))
-    source = request.form.get('source')
-    if source == "basic_auth":
-        if scan_data(task_name, target_list, username_list, password_list, recursion, "Basic Auth"):
-            return "success"
-
-    elif source == "mysql_auth":
-        if scan_data(task_name, target_list, username_list, password_list, recursion, "MySQL Auth"):
-            return "success"
-
-    elif source == "ssh_auth":
-        if scan_data(task_name, target_list, username_list, password_list, recursion, "SSH Auth"):
-            return "success"
-
-    elif source == "redis_auth":
-        if scan_data(task_name, target_list, username_list, password_list, recursion, "Redis Auth"):
-            return "success"
-
-
-def scan_data(task_name, target_list, username_list, password_list, recursion, scan_type):
-    data = {
-        "task_name": task_name,
-        "target": target_list,
-        "username": username_list,
-        "password": password_list,
-        "type": scan_type,
-        "recursion": recursion,
-        "status": "Queued",
-        "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-        "week_count": 0,
-    }
-    _id = connectiondb(auth_db).insert_one(data).inserted_id
-    scanner = AuthCrack(target_list, username_list, password_list, _id, task_name, scan_type)
-    if _id and scanner:
-        t1 = Thread(target=scanner.start_scan, args=())
-        t1.start()
-        return True
-    else:
-        return False
-
-
-@auth_tester.route('/new-auth-task', methods=['POST'])
-@login_check
-def new_tasks():
     username_list = request.form.get('username_list').split('\n')
     password_list = request.form.get('password_list').split('\n')
     task_name = time.strftime("%y%m%d", time.localtime()) + "_" + request.form.get('task_name')
     target_list = request.form.get('target_list').split('\n')
     recursion = int(request.form.get('recursion'))
-    auth_type = request.form.get('auth_type')
-    if auth_type == "basic_auth":
-        if scan_data(task_name, target_list, username_list, password_list, recursion, "Basic Auth"):
-            return "success"
-
-    elif auth_type == "mysql_auth":
-        if scan_data(task_name, target_list, username_list, password_list, recursion, "MySQL Auth"):
-            return "success"
-
-    elif auth_type == "ssh_auth":
-        if scan_data(task_name, target_list, username_list, password_list, recursion, "SSH Auth"):
-            return "success"
-
-    elif auth_type == "redis_auth":
-        if scan_data(task_name, target_list, username_list, password_list, recursion, "Redis Auth"):
-            return "success"
+    service = request.form.get('service_list').split(',')
+    args = request.form.get('args')
+    data = {
+        "task_name": task_name,
+        "target": target_list,
+        "username": username_list,
+        "password": password_list,
+        "service": service,
+        "recursion": recursion,
+        "status": "Queued",
+        "args": args,
+        "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+        "week_count": 0,
+    }
+    task_id = connectiondb(auth_db).insert_one(data).inserted_id
+    if task_id:
+        scanner = AuthCrack(task_id)
+        t1 = Thread(target=scanner.start_scan, args=())
+        t1.start()
+        return 'success'
+    else:
+        return False
 
 
 @auth_tester.route('/auth-tester-tasks', methods=['GET', 'POST'])
@@ -118,12 +83,6 @@ def task_management():
         # rescan task
         elif request.args.get('rescan'):
             task_id = request.args.get('rescan')
-            task_info = connectiondb(auth_db).find_one({"_id": ObjectId(task_id)})
-            username_list = task_info['username']
-            password_list = task_info['password']
-            task_name = task_info['task_name']
-            target_list = task_info['target']
-            task_type = task_info['type']
             # connectiondb(weekpasswd_db).remove({"task_id": ObjectId(task_id)})
             connectiondb(weekpasswd_db).update({"task_id": ObjectId(task_id)}, {"$set": {"tag": "delete"}}, multi=True)
             connectiondb(auth_db).update_one({"_id": ObjectId(task_id)}, {"$set": {
@@ -131,7 +90,7 @@ def task_management():
                 "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
                 "week_count": 0,
             }})
-            scanner = AuthCrack(target_list, username_list, password_list, ObjectId(task_id), task_name, task_type)
+            scanner = AuthCrack(ObjectId(task_id))
             if scanner:
                 t1 = Thread(target=scanner.start_scan, args=())
                 t1.start()

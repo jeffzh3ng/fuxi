@@ -23,7 +23,7 @@
                         <thead>
                         <tr class="text-center">
                             <th>Name</th>
-                            <th>Type</th>
+                            <th>Service</th>
                             <th>Recursion</th>
                             <th>Status</th>
                             <th>Count</th>
@@ -37,7 +37,7 @@
                                 <td>
                                     <a href="week-passwd-list?task={{ i['_id'] }}">{{ i['task_name'] }}</a>
                                 </td>
-                                <td>{{ i['type'] }}</td>
+                                <td>{{ i['service'][0] }} {{ i['service'][1] }} {{ i['service'][3] }}...</td>
                                 {% if i['recursion'] == 0 %}
                                     <td>Once</td>
                                 {% elif i['recursion'] == 1 %}

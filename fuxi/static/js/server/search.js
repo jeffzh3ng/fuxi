@@ -1,4 +1,5 @@
 var demo1 = $('select[name="plugin_list"]').bootstrapDualListbox();
+var demo2 = $('select[name="auth_service_list"]').bootstrapDualListbox();
 
 $(".btn_select").on("click",function(){
     var selects = document.getElementsByName("select_id");
@@ -20,23 +21,24 @@ $(".btn_select").on("click",function(){
 });
 
 $("#asset-auth-tasks").click(function () {
-    const username_list = $('[name="username_val"]').val();
-    const password_list = $('[name="password_val"]').val();
-    const task_name = $('[name="auth_taskname_val"]').val();
+    const task_name = $('[name="auth_task_name"]').val();
     const target_list = $('[name="auth_target_list"]').val();
+    const service_list = $('[name="auth_service_list"]').val().join(",");
+    const username_list = $('[name="auth_username_list"]').val();
+    const password_list = $('[name="auth_password_list"]').val();
+    const args = $('[name="auth_args"]').val();
     const recursion = $('[name="auth_recursion"]').val();
-    const auth_type = $('[name="auth_type"]').val();
-    if (!username_list || !password_list || !task_name || !target_list || !recursion || !auth_type) {
+    if (!task_name || !target_list || !service_list|| !username_list|| !password_list || !recursion) {
         swal("Warning","Please check the input!", "error");
     } else {
-        $.post('/new-auth-task', {
-            "username_list": username_list,
-            "password_list": password_list,
+        $.post('/auth-tester', {
             "task_name": task_name,
             "target_list": target_list,
+            "service_list": service_list,
+            "username_list": username_list,
+            "password_list": password_list,
+            "args": args,
             "recursion": recursion,
-            "auth_type": auth_type,
-            "source": "asset",
         }, function (e) {
             if (e === 'success') {
                 swal({
