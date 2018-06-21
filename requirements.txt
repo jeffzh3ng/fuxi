@@ -9,5 +9,3 @@ dnspython
 ipaddr
 bs4
 requests
-pexpect
-MySQL-python
