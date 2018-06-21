@@ -34,6 +34,8 @@ def option_view():
             "auth_tester_thread": config_data['auth_tester_thread'],
             "subdomain_dict_2": '\n'.join(config_data['subdomain_dict_2']),
             "subdomain_dict_3": '\n'.join(config_data['subdomain_dict_3']),
+            "username_dict": '\n'.join(config_data['username_dict']),
+            "password_dict": '\n'.join(config_data['password_dict']),
             "discovery_time": config_data['discovery_time'],
             "port_list": ','.join('%s' % port for port in config_data['port_list']),
         }
@@ -73,20 +75,12 @@ def option_view():
             else:
                 return "Warning"
 
-        elif request.form.get("source") == "auth_username":
+        elif request.form.get("source") == "auth":
             update_config = {
-                "username_dict": request.form.get('username_dict').split('\n'),
+                "username_dict": request.form.get('username_list').split('\n'),
+                "password_dict": request.form.get('password_list').split('\n'),
             }
 
-            if connectiondb(config_db).update_one({'config_name': config_name}, {"$set": update_config}):
-                return "success"
-            else:
-                return "Warning"
-
-        elif request.form.get("source") == "auth_password":
-            update_config = {
-                "password_dict": request.form.get('password_dict').split('\n'),
-            }
             if connectiondb(config_db).update_one({'config_name': config_name}, {"$set": update_config}):
                 return "success"
             else:

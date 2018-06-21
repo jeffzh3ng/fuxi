@@ -67,6 +67,36 @@ $(function () {
         }
     });
 
+    $(".update-user-passwd").click(function () {
+        const username_list = $('[id="username_list"]').val();
+        const password_list = $('[id="password_list"]').val();
+        if (!username_list || !password_list) {
+            swal("Warning","Please check the input!", "error");
+        } else {
+            $.post('/advanced-option', {
+                "username_list": username_list,
+                "password_list": password_list,
+                "source": "auth"
+            }, function (e) {
+                if (e === 'success') {
+                    swal({
+                      title: "Successfully Update!",
+                      text: "",
+                      type: "success",
+                      confirmButtonColor: "#41b883",
+                      confirmButtonText: "ok",
+                      closeOnConfirm: false
+                    },
+                    function(){
+                      location.href = "/advanced-option";
+                    });
+                } else {
+                    swal("Error","Something wrong", "error");
+                }
+            })
+        }
+    });
+
     $(".update-port-config").click(function () {
         const port_list = $('[id="port_list"]').val();
         if (!port_list) {

@@ -111,6 +111,28 @@
             </div>
         </div>
 
+        <div class="col-md-6">
+            <div class="tile">
+                <h3 class="tile-title">Username & Password</h3>
+                <div class="tile-body">
+                    <form class="form-horizontal">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label class="control-label no-padding-right">Username<span class="text-danger">*</span></label>
+                                <textarea class="form-control" id='username_list' type="text" placeholder="One username per line" rows="10">{{ config_info['username_dict'] }}</textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="control-label no-padding-right">Password<span class="text-danger">*</span></label>
+                                <textarea class="form-control" id='password_list' type="text" placeholder="One password per line" rows="10">{{ config_info['password_dict'] }}</textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tile-footer"><a class="btn btn-primary update-user-passwd" href="#"><i class="fa fa-check-circle"></i> Submit</a></div>
+            </div>
+        </div>
+
     </div>
 </main>
 
