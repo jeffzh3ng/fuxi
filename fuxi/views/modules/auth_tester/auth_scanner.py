@@ -108,8 +108,7 @@ class AuthCrack:
                         port = target_l[-1]
                         del target_l[-1]
                         target = ''.join(target_l)
-                        self.args.append('-s')
-                        self.args.append(port)
+                        self.args = self.args + '-s %s' % port
                 if service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
                     if len(self.args) > 0:
                         command = ['hydra', '-t', '1', '-p', ''] + [self.args] + [target] + [service]
@@ -129,8 +128,7 @@ class AuthCrack:
                         port = target_l[-1]
                         del target_l[-1]
                         target = ''.join(target_l)
-                        self.args.append('-s')
-                        self.args.append(port)
+                        self.args = self.args + '-s %s' % port
                 if service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
                     for password in self.password_list:
                         if len(self.args) > 0:
