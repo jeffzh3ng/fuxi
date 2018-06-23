@@ -5,6 +5,7 @@
 # @File    : acunetix_scanner.py
 # @Desc    : ""
 
+from __future__ import print_function
 import time
 from bson import ObjectId
 from flask import Blueprint, render_template, request, jsonify

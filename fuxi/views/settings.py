@@ -5,8 +5,9 @@
 # @File    : settings.py
 # @Desc    : ""
 
+from __future__ import absolute_import
 from flask import Blueprint, render_template, request
-from lib.mongo_db import connectiondb, db_name_conf
+from .lib.mongo_db import connectiondb, db_name_conf
 from fuxi.views.authenticate import login_check
 from instance import config_name
 

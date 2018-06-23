@@ -5,11 +5,12 @@
 # @File    : port_scanner.py
 # @Desc    : ""
 
+from __future__ import absolute_import
 import threading
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from bson import ObjectId
-from lib.mongo_db import connectiondb, db_name_conf
+from .lib.mongo_db import connectiondb, db_name_conf
 from fuxi.views.authenticate import login_check
 from fuxi.views.modules.port_scanner.nmap_scanner import nmap_scanner
 from instance import config_name

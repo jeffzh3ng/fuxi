@@ -5,6 +5,7 @@
 # @File    : authenticate.py
 # @Desc    : ""
 
+from __future__ import print_function
 from flask import Blueprint, render_template, request, redirect, url_for, Flask, session
 from instance import config
 from functools import wraps
@@ -52,7 +53,7 @@ def login_check(f):
                     return redirect(url_for('authenticate.login_view'))
             else:
                 return redirect(url_for('authenticate.login_view'))
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             return redirect(url_for('authenticate.login_view'))
     return wrapper

@@ -6,6 +6,7 @@
 # @Desc    : ""
 
 
+from __future__ import print_function
 import dns.resolver
 from multiprocessing import Pool, Lock
 from datetime import datetime
@@ -102,10 +103,10 @@ class DomainBrute:
                         connectiondb(subdomain_db).insert_one(data)
                         # print(self.result, var)
                     except Exception as e:
-                        print("save_db error", e)
+                        print(("save_db error", e))
                     lock.release()
         scan_time = datetime.now() - start_date
-        print("++++++++++ Scan Done! ++++++++++", scan_time.total_seconds())
+        print(("++++++++++ Scan Done! ++++++++++", scan_time.total_seconds()))
 
 
 def start_domain_brute(domain, domain_id):
@@ -135,5 +136,5 @@ def get_domain_title(domain_id):
                 "title": res.get()['title']
             }})
         except Exception as e:
-            print("update title error", e)
+            print(("update title error", e))
         lock.release()

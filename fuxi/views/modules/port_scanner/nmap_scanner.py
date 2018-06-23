@@ -5,6 +5,7 @@
 # @File    : nmap_scanner.py
 # @Desc    : ""
 
+from __future__ import print_function
 import nmap
 from fuxi.views.lib.mongo_db import connectiondb, db_name_conf
 
@@ -24,7 +25,7 @@ class NmapScanner:
         try:
             port_scanner.scan(self.target, arguments=self.arguments)
         except Exception as e:
-            print self.target, e
+            print(self.target, e)
         return port_scanner
 
     def port_result(self):

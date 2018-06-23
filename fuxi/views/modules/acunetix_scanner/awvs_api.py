@@ -5,6 +5,7 @@
 # @File    : awvs_api.py
 # @Desc    : ""
 
+from __future__ import print_function
 import time
 import os
 import json
@@ -45,7 +46,7 @@ class AcunetixScanner:
                                      headers=self.headers, timeout=30, verify=False)
             return json.loads(response.content)['target_id']
         except Exception as e:
-            print(target, e)
+            print((target, e))
             return False
 
     def start_task(self, target, desc, profile_id):
@@ -68,7 +69,7 @@ class AcunetixScanner:
                                      headers=self.headers, timeout=30, verify=False)
             return json.loads(response.content)
         except Exception as e:
-            print(target, target_id, e)
+            print((target, target_id, e))
             return False
 
     def get_all(self):
@@ -103,7 +104,7 @@ class AcunetixScanner:
             else:
                 return False
         except Exception as e:
-                print(scan_id, e)
+                print((scan_id, e))
                 return False
 
     def delete_target(self, target_id):
@@ -115,7 +116,7 @@ class AcunetixScanner:
             else:
                 return False
         except Exception as e:
-                print(target_id, e)
+                print((target_id, e))
                 return False
 
     def reports(self, id_list, list_type, task_name):
@@ -147,5 +148,5 @@ class AcunetixScanner:
             else:
                 return False
         except Exception as e:
-                print(id_list, e)
+                print((id_list, e))
                 return False

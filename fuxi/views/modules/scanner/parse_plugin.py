@@ -6,6 +6,7 @@
 # @Desc    : ""
 
 
+from __future__ import print_function
 import os
 import re
 from fuxi.views.lib.mongo_db import connectiondb, db_name_conf

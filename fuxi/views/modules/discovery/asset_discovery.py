@@ -5,6 +5,7 @@
 # @File    : asset_discovery.py
 # @Desc    : ""
 
+from __future__ import print_function
 import nmap
 import time
 from multiprocessing import Pool
@@ -30,7 +31,7 @@ class AssetDiscovery:
         self.host_list = parse_target(connectiondb(asset_db).find_one({"_id": self.asset_id})['asset_host'])
 
     def set_discovery(self):
-        print(self.asset_id, "Discovery start...")
+        print((self.asset_id, "Discovery start..."))
         pool_port = Pool(processes=self.processes)
         for host in self.host_list:
             self.result_tmp.append(pool_port.apply_async(port_scanner, (host, self.port_list)))
@@ -55,7 +56,7 @@ class AssetDiscovery:
             res['tag'] = ""
             res['date'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             connectiondb(server_db).insert(res, check_keys=False)
-        print(self.asset_id, "Discovery done...")
+        print((self.asset_id, "Discovery done..."))
 
 
 def port_scanner(host, port_list):
