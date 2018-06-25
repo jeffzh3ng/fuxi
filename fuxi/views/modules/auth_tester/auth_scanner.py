@@ -63,7 +63,18 @@ class AuthCrack:
             pool_a.join()
             for res_a in tmp_result:
                 if res_a.get():
-                    self.online_target.append(res_a.get())
+                    target = res_a.get()['target']
+                    check_res = res_a.get()['result']
+                    if check_res:
+                        username = check_res['username']
+                        password = check_res['password']
+                        if not username:
+                            username = "None"
+                        if not password:
+                            password = "None"
+                        self.save_result(target, service, username, password)
+                    else:
+                        self.online_target.append(target)
             # start crack
             pool_b = Pool(processes=self.processes)
             args_crack = self._args_parse(service, 'crack')

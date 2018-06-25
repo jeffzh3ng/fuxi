@@ -57,7 +57,11 @@ class HydraScanner:
             hydra_out.wait()
             time_out.cancel()
             if 'waiting for children to finish' not in output and 'completed' in output and 'password' in output:
-                return self.target
+                if "successfully" in output and self.target in output:
+                    return {"target": self.target, "result": {'username': self.username, "password": self.password}}
+                else:
+                    return {"target": self.target, "result": ""}
+
         except Exception as e:
             raise e
 
