@@ -111,6 +111,9 @@ class AuthCrack:
 
     def _args_parse(self, service, opt):
         args_list = []
+        new_args = [self.args]
+        while '' in new_args:
+            new_args.remove('')
         if opt == 'check':
             for target in self.target_list:
                 if ":" in target:
@@ -119,17 +122,18 @@ class AuthCrack:
                         port = target_l[-1]
                         del target_l[-1]
                         target = ''.join(target_l)
-                        self.args = self.args + '-s %s' % port
+                        if '-s ' + str(port) not in new_args:
+                            new_args.append('-s ' + str(port))
                 if service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
-                    if len(self.args) > 0:
-                        command = ['hydra', '-m 30', '-t 1', '-p', ''] + [self.args] + [target] + [service]
+                    if len(new_args) > 0:
+                        command = ['hydra', '-w 30', '-t 1', '-p', ''] + new_args + [target] + [service]
                     else:
-                        command = ['hydra', '-m 30', '-t 1', '-p', ''] + [target] + [service]
+                        command = ['hydra', '-w 30', '-t 1', '-p', ''] + [target] + [service]
                 else:
-                    if len(self.args) > 0:
-                        command = ['hydra', '-m 30', '-t 1', '-l', '', '-p', ''] + [self.args] + [target] + [service]
+                    if len(new_args) > 0:
+                        command = ['hydra', '-w 30', '-t 1', '-l', '', '-p', ''] + new_args + [target] + [service]
                     else:
-                        command = ['hydra', '-m 30', '-t 1', '-l', '', '-p', ''] + [target] + [service]
+                        command = ['hydra', '-w 30', '-t 1', '-l', '', '-p', ''] + [target] + [service]
                 args_list.append(command)
         elif opt == 'crack':
             for target in self.online_target:
@@ -139,21 +143,21 @@ class AuthCrack:
                         port = target_l[-1]
                         del target_l[-1]
                         target = ''.join(target_l)
-                        self.args = self.args + '-s %s' % port
+                        new_args.append('-s ' + str(port))
                 if service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
                     for password in self.password_list:
-                        if len(self.args) > 0:
-                            command = ['hydra', '-m 30', '-t 1', '-p', password] + [self.args] + [target] + [service]
+                        if len(new_args) > 0:
+                            command = ['hydra', '-w 30', '-t 1', '-p', password] + new_args + [target] + [service]
                         else:
-                            command = ['hydra', '-m 30', '-t 1', '-p', password] + [target] + [service]
+                            command = ['hydra', '-w 30', '-t 1', '-p', password] + [target] + [service]
                         args_list.append(command)
                 else:
                     for username in self.username_list:
                         for password in self.password_list:
-                            if len(self.args) > 0:
-                                command = ['hydra', '-m 30', '-t 1', '-l', username, '-p', password] + [self.args] + [target] + [service]
+                            if len(new_args) > 0:
+                                command = ['hydra', '-w 30', '-t 1', '-l', username, '-p', password] + new_args + [target] + [service]
                             else:
-                                command = ['hydra', '-m 30', '-t 1', '-l', username, '-p', password] + [target] + [service]
+                                command = ['hydra', '-w 30', '-t 1', '-l', username, '-p', password] + [target] + [service]
                             args_list.append(command)
         return args_list
 
