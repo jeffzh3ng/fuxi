@@ -34,7 +34,8 @@ function plugin_info(nid){
         data: data,
         dataType: 'json',
         success: function(result) {
-            $('#plugin_info').html(JSON.stringify(result, null, 4));
+            var html = filterXSS(JSON.stringify(result, null, 4));
+            $('#plugin_info').html(html);
         },
         error: function(xhr, type) {
 
