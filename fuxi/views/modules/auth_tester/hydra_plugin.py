@@ -5,8 +5,7 @@
 # @File    : hydra_plugin.py
 # @Desc    : ""
 
-import subprocess
-import threading
+from subprocess import PIPE, Popen
 
 
 class HydraScanner:
@@ -28,16 +27,10 @@ class HydraScanner:
         self.args = args
 
     def scanner(self):
-        msg = '[*] ' + self.target + '  ' + self.service + '  ' + self.username + '  ' + self.password
-        print(msg)
+        process = Popen(self.args, stdout=PIPE, stderr=PIPE)
         try:
-            hydra_out = subprocess.Popen(self.args, stdout=subprocess.PIPE)
-            output = hydra_out.stdout.read()
-            time_out = threading.Timer(1200, hydra_out.kill)
-            time_out.start()
-            hydra_out.wait()
-            time_out.cancel()
-            if 'successfully' in output and "[" + self.service + "]" in output:
+            (stdout, stderr) = process.communicate()
+            if 'successfully' in stdout and "[" + self.service + "]" in stdout:
                 result = {
                     "target": self.target,
                     "service": self.service,
@@ -46,22 +39,24 @@ class HydraScanner:
                 }
                 return result
         except Exception as e:
-            raise e
+            process.kill()
+            print(process, e)
+            return False
 
     def host_check(self):
+        process = Popen(self.args, stdout=PIPE, stderr=PIPE)
         try:
-            hydra_out = subprocess.Popen(self.args, stdout=subprocess.PIPE)
-            output = hydra_out.stdout.read()
-            time_out = threading.Timer(1200, hydra_out.kill)
-            time_out.start()
-            hydra_out.wait()
-            time_out.cancel()
-            if 'waiting for children to finish' not in output and 'completed' in output and 'password' in output:
-                if "successfully" in output and self.target in output:
-                    return {"target": self.target, "result": {'username': self.username, "password": self.password}}
-                else:
-                    return {"target": self.target, "result": ""}
-
+            (stdout, stderr) = process.communicate()
+            if "successfully" in stdout and self.target in stdout:
+                return {"target": self.target, "result": {'username': self.username, "password": self.password}}
+            elif 'can not connect' in stderr:
+                return False
+            elif 'waiting for children to finish' in stdout:
+                return False
+            else:
+                return {"target": self.target, "result": ""}
         except Exception as e:
-            raise e
+            process.kill()
+            print(process, e)
+            return False
 

@@ -122,14 +122,14 @@ class AuthCrack:
                         self.args = self.args + '-s %s' % port
                 if service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
                     if len(self.args) > 0:
-                        command = ['hydra', '-t', '1', '-p', ''] + [self.args] + [target] + [service]
+                        command = ['hydra', '-m 30', '-t 1', '-p', ''] + [self.args] + [target] + [service]
                     else:
-                        command = ['hydra', '-t', '1', '-p', ''] + [target] + [service]
+                        command = ['hydra', '-m 30', '-t 1', '-p', ''] + [target] + [service]
                 else:
                     if len(self.args) > 0:
-                        command = ['hydra', '-t', '1', '-l', '', '-p', ''] + [self.args] + [target] + [service]
+                        command = ['hydra', '-m 30', '-t 1', '-l', '', '-p', ''] + [self.args] + [target] + [service]
                     else:
-                        command = ['hydra', '-t', '1', '-l', '', '-p', ''] + [target] + [service]
+                        command = ['hydra', '-m 30', '-t 1', '-l', '', '-p', ''] + [target] + [service]
                 args_list.append(command)
         elif opt == 'crack':
             for target in self.online_target:
@@ -143,17 +143,17 @@ class AuthCrack:
                 if service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
                     for password in self.password_list:
                         if len(self.args) > 0:
-                            command = ['hydra', '-t', '1', '-p', password] + [self.args] + [target] + [service]
+                            command = ['hydra', '-m 30', '-t 1', '-p', password] + [self.args] + [target] + [service]
                         else:
-                            command = ['hydra', '-t', '1', '-p', password] + [target] + [service]
+                            command = ['hydra', '-m 30', '-t 1', '-p', password] + [target] + [service]
                         args_list.append(command)
                 else:
                     for username in self.username_list:
                         for password in self.password_list:
                             if len(self.args) > 0:
-                                command = ['hydra', '-t', '1', '-l', username, '-p', password] + [self.args] + [target] + [service]
+                                command = ['hydra', '-m 30', '-t 1', '-l', username, '-p', password] + [self.args] + [target] + [service]
                             else:
-                                command = ['hydra', '-t', '1', '-l', username, '-p', password] + [target] + [service]
+                                command = ['hydra', '-m 30', '-t 1', '-l', username, '-p', password] + [target] + [service]
                             args_list.append(command)
         return args_list
 
