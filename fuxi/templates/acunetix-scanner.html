@@ -60,7 +60,7 @@
                                     {% elif i['scan_type'] == '5' %}
                                         <td>Crawl Only</td>
                                     {% endif %}
-                                    <td>{{ i['target_list'][0] }}...</td>
+                                    <td>{{ i['target_list'] | join(',') | truncate(20 , True)}}...</td>
                                     <td>{{ i['description'] }}</td>
                                     <td>{{ i['date'] }}</td>
                                     <td class="text-center">

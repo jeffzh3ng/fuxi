@@ -46,7 +46,7 @@
                                     <td>
                                         <a href="subdomain-list?domain={{ i['_id'] }}">{{ i['domain_name'] }}</a>
                                     </td>
-                                    <td>{{ i['domain'] | join(',') | truncate(15 , True)}}</td>
+                                    <td title="{{ i['domain'] | join(',')}}">{{ i['domain'] | join(',') | truncate(15 , True)}}</td>
                                     <td>{{ i['status'] }}</td>
                                     <td>{{ i['date'] }}</td>
                                     <td class="text-center">

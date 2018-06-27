@@ -37,7 +37,7 @@
                                 <td>
                                     <a href="week-passwd-list?task={{ i['_id'] }}">{{ i['task_name'] }}</a>
                                 </td>
-                                <td>{{ i['service'] | join(',') | truncate(15 , True) | upper}}</td>
+                                <td title="{{ i['service'] | join(',') | upper}}">{{ i['service'] | join(',') | truncate(15 , True) | upper}}</td>
                                 {% if i['recursion'] == 0 %}
                                     <td>Once</td>
                                 {% elif i['recursion'] == 1 %}
