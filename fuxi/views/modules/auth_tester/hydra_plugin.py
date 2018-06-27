@@ -49,6 +49,8 @@ class HydraScanner:
             (stdout, stderr) = process.communicate()
             if "successfully" in stdout and self.target in stdout:
                 return {"target": self.target, "result": {'username': self.username, "password": self.password}}
+            elif 'Anonymous success' in stderr:
+                return {"target": self.target, "result": {'username': self.username, "password": self.password}}
             elif 'can not connect' in stderr:
                 return False
             elif 'waiting for children to finish' in stdout:
