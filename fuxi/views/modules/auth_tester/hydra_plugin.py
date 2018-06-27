@@ -5,7 +5,10 @@
 # @File    : hydra_plugin.py
 # @Desc    : ""
 
+import os
+import signal
 from subprocess import PIPE, Popen
+from datetime import datetime
 
 
 class HydraScanner:
@@ -27,8 +30,17 @@ class HydraScanner:
         self.args = args
 
     def scanner(self):
+        start_time = datetime.now()
         process = Popen(self.args, stdout=PIPE, stderr=PIPE)
         try:
+            while process.poll() is None:
+                now_time = datetime.now()
+                if (now_time - start_time).seconds > 30:
+                    try:
+                        os.kill(process.pid, signal.SIGTERM)
+                    except OSError as e:
+                        print(process.pid, e)
+                    return False
             (stdout, stderr) = process.communicate()
             if 'successfully' in stdout and "[" + self.service + "]" in stdout:
                 result = {
@@ -44,8 +56,17 @@ class HydraScanner:
             return False
 
     def host_check(self):
+        start_time = datetime.now()
         process = Popen(self.args, stdout=PIPE, stderr=PIPE)
         try:
+            while process.poll() is None:
+                now_time = datetime.now()
+                if (now_time - start_time).seconds > 30:
+                    try:
+                        os.kill(process.pid, signal.SIGTERM)
+                    except OSError as e:
+                        print(process.pid, e)
+                    return False
             (stdout, stderr) = process.communicate()
             if "successfully" in stdout and self.target in stdout:
                 return {"target": self.target, "result": {'username': self.username, "password": self.password}}
