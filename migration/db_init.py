@@ -22,7 +22,6 @@ config_db = db_name_conf()['config_db']
 
 
 def config():
-    connectiondb(config_db).drop()
     subdomain_dict = []
     subdomain_dict_path = os.getcwd() + '/tests/domain.dict'
     try:
@@ -32,7 +31,7 @@ def config():
     except Exception as e:
         print(e)
         subdomain_dict = ['www', 'mail', 'test']
-    if not connectiondb(config_db).find({"config_name": config_name}):
+    if not connectiondb(config_db).find_one({"config_name": config_name}):
         config_data = {
             'poc_thread': 50,
             'discovery_thread': 50,
