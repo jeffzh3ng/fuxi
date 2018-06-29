@@ -5,7 +5,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN set -x \
     && apt-get update \
-    && apt-get install -y wget unzip gcc libssl-dev libffi-dev python-dev libpcap-dev python-pip apt-transport-https \
+    && apt-get install -y python python-dev python-pip python-setuptools nmap hydra curl apt-transport-https \
     && python -m pip install pip==9.0.3
 
 RUN set -x \
