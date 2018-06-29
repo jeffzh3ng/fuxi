@@ -44,7 +44,7 @@ docker pull jeffzh3ng/fuxi-scanner
 docker run -dit -p 5000:5000 -v /opt/data:/data fuxi-scanner:latest
 ```
 
-浏览器打开 http://127.0.0.1:5000，检查`fuxi`是否开始工作
+浏览器打开 [http://127.0.0.1:5000](http://127.0.0.1:5000)，检查`fuxi`是否开始工作
 
 `password: whoami`
 
