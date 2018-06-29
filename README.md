@@ -35,10 +35,10 @@ docker pull jeffzh3ng/fuxi-scanner
 ```
 
 ```bash
-docker run -dit -p 5000:5000 -v /opt/data:/data fuxi-scanner:latest
+docker run -dit -p 5000:5000 -v /opt/data:/data jeffzh3ng/fuxi-scanner:latest
 ```
 
-Done! Open your browser to `http://127.0.0.1:5000` to see it working
+Done! Wait 10s, Open your browser to `http://127.0.0.1:5000` to see it working
 
 `password: whoami`
 
