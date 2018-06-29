@@ -20,6 +20,28 @@ Fuxi Scanner is an open source network security vulnerability scanner, it comes 
 
 ![fuxi_dashboard.png](doc/images/fuxi_dashboard.png)
 
+## Quick Start
+
+```bash
+git clone --depth 1 https://github.com/jeffzh3ng/Fuxi-Scanner.git fuxi-scanner
+cd fuxi-scanner
+docker build -t jeffzh3ng/fuxi-scanner .
+```
+
+or
+
+```bash
+docker pull jeffzh3ng/fuxi-scanner
+```
+
+```bash
+docker run -dit -p 5000:5000 -v /opt/data:/data fuxi-scanner:latest
+```
+
+Done! Open your browser to `http://127.0.0.1:5000` to see it working
+
+`password: whoami`
+
 ## Installation
 
 [Documentation](doc/INSTALL.en.md)
