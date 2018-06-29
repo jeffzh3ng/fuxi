@@ -18,7 +18,7 @@ class Config:
     WEB_PASSWORD = 'whoami'  # Web Auth Password
     POCSUITE_PATH = basedir + '/../fuxi/views/modules/scanner/pocsuite_plugin/'
     AWVS_REPORT_PATH = basedir + '/../fuxi/static/download/'  # static file download
-    WEB_HOST = '127.0.0.1'  # Web Server Host
+    WEB_HOST = '0.0.0.0'  # Web Server Host
     WEB_PORT = 5000  # Web Server Port
     UPDATE_URL = "https://fuxi.hook.ga/update"  # check update
     VERSION = '1.2.0'  # scanner version
@@ -46,4 +46,6 @@ class ProductionConfig(Config):
     AUTH_DB = 'dev_auth_tester'  # Auth tester tasks collection
     ACUNETIX_DB = 'dev_acunetix'  # Acunetix scanner tasks collection
     WEEKPASSWD_DB = 'dev_week_passwd'  # Week password collection
+    GITHUB_TASK_DB = 'dev_github_task'  # Github leaks tasks
+    GITHUB_LEAK_DB = 'dev_github_leak'  # Github leaks info
 
