@@ -200,7 +200,7 @@ class ProductionConfig(Config):
 ```bash
 sudo service mongod restart
 cd fuxi-scanner
-python migration/start.py
+python migration/db_init.py
 python fuxi_scanner.py
 * Running on http://127.0.0.1:5000
 ```
