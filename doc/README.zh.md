@@ -44,6 +44,13 @@ docker pull jeffzh3ng/fuxi-scanner
 docker run -dit -p 5000:5000 -v /opt/data:/data jeffzh3ng/fuxi-scanner:latest
 ```
 
+或者
+
+```bash
+docker run -dit -p 5000:5000 -v /opt/data:/data -v /etc/localtime:/etc/localtime jeffzh3ng/fuxi-scanner
+// 同步主机与 Docker 时间
+```
+
 等待10s，浏览器打开 `http://127.0.0.1:5000`，检查`fuxi`是否开始工作
 
 `password: whoami`

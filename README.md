@@ -38,6 +38,13 @@ docker pull jeffzh3ng/fuxi-scanner
 docker run -dit -p 5000:5000 -v /opt/data:/data jeffzh3ng/fuxi-scanner:latest
 ```
 
+or
+
+```bash
+docker run -dit -p 5000:5000 -v /opt/data:/data -v /etc/localtime:/etc/localtime jeffzh3ng/fuxi-scanner
+// Synchronize timezone from host to container
+```
+
 Done! Wait 10s, Open your browser to `http://127.0.0.1:5000` to see it working
 
 `password: whoami`
