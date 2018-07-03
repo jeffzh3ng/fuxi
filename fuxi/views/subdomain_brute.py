@@ -5,12 +5,14 @@
 # @File    : subdomain_brute.py
 # @Desc    : ""
 
+from __future__ import print_function
+from __future__ import absolute_import
 import time
 import os
 from threading import Thread
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, make_response, send_from_directory
 from bson import ObjectId
-from lib.mongo_db import connectiondb, db_name_conf
+from .lib.mongo_db import connectiondb, db_name_conf
 from fuxi.views.authenticate import login_check
 from fuxi.views.modules.subdomain import domain_brute
 

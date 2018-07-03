@@ -5,6 +5,7 @@
 # @File    : mongo_db.py
 # @Desc    : ""
 
+from __future__ import print_function
 from flask import Flask
 from pymongo import MongoClient
 from instance import config
@@ -69,4 +70,4 @@ def db_name_conf():
 
 
 if __name__ == "__main__":
-    print db_management('collection_names')
+    print(db_management('collection_names'))

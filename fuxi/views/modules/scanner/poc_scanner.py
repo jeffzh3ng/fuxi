@@ -5,6 +5,7 @@
 # @File    : poc_scanner.py
 # @Desc    : =_=!!
 
+from __future__ import print_function
 import sched
 import time
 import datetime

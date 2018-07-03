@@ -5,6 +5,8 @@
 # @File    : hydra_plugin.py
 # @Desc    : ""
 
+from __future__ import print_function
+
 import os
 import signal
 from subprocess import PIPE, Popen
@@ -82,4 +84,3 @@ class HydraScanner:
             process.kill()
             print(process, e)
             return False
-

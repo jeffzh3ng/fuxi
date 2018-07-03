@@ -5,11 +5,13 @@
 # @File    : vul_scanner.py
 # @Desc    : ""
 
+from __future__ import print_function
+from __future__ import absolute_import
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from bson import ObjectId
 from threading import Thread
-from lib.mongo_db import connectiondb, db_name_conf
+from .lib.mongo_db import connectiondb, db_name_conf
 from fuxi.views.modules.scanner.poc_scanner import PocsuiteScanner
 from fuxi.views.authenticate import login_check
 

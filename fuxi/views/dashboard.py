@@ -5,12 +5,13 @@
 # @File    : dashboard.py
 # @Desc    : ""
 
+from __future__ import absolute_import
 import datetime
 import re
 from collections import Counter
 from flask import Blueprint, render_template
 from bson import ObjectId
-from lib.mongo_db import connectiondb, db_name_conf
+from .lib.mongo_db import connectiondb, db_name_conf
 from fuxi.views.authenticate import login_check
 
 dashboard = Blueprint('dashboard', __name__)

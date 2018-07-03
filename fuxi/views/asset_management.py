@@ -5,12 +5,14 @@
 # @File    : asset_management.py
 # @Desc    : ""
 
+from __future__ import print_function
+from __future__ import absolute_import
 import time
 import json
 from threading import Thread
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from bson import ObjectId
-from lib.mongo_db import connectiondb, db_name_conf
+from .lib.mongo_db import connectiondb, db_name_conf
 from fuxi.views.authenticate import login_check
 from instance import config_name
 from fuxi.views.modules.discovery.asset_discovery import AssetDiscovery

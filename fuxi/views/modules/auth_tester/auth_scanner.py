@@ -5,6 +5,7 @@
 # @File    : auth_scanner.py
 # @Desc    : ""
 
+from __future__ import print_function
 import time
 from threading import Thread
 from datetime import datetime
@@ -192,17 +193,17 @@ class AuthTesterLoop:
             elif self.recursion == 1 and "Completed" in self.status:
                 if plan_time > 60 * 60 * 24 * 1:
                     if self.start_loop_scan():
-                        print("[*] Every Day Task Start...", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+                        print(("[*] Every Day Task Start...", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
             # every week
             elif self.recursion == 7 and "Completed" in self.status:
                 if plan_time > 60 * 60 * 24 * 7:
                     if self.start_loop_scan():
-                        print("[*] Every Week Task Start...", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+                        print(("[*] Every Week Task Start...", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
             # every month
             elif self.recursion == 30 and "Completed" in self.status:
                 if plan_time > 60 * 60 * 24 * 30:
                     if self.start_loop_scan():
-                        print("[*] Every Month Task Start...", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+                        print(("[*] Every Month Task Start...", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
 
     def start_loop_scan(self):
         connectiondb(weekpasswd_db).update({"task_id": self.task_id}, {"$set": {"tag": "delete"}}, multi=True)

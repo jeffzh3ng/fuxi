@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 import socket
 import urlparse
 from pocsuite.utils import register
@@ -47,7 +48,7 @@ class TestPOC(POCBase):
                 result['VerifyInfo']['port'] = port
                 result['VerifyInfo']['result'] = data[:20]
         except Exception as e:
-            print e
+            print(e)
         s.close()
         return self.parse_attack(result)
 

@@ -5,6 +5,7 @@
 # @File    : fuxi.py
 # @Desc    : ""
 
+from __future__ import print_function
 import threading
 from flask import Flask
 from fuxi.app import app

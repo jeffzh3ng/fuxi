@@ -5,6 +5,7 @@
 # @File    : parse_target.py
 # @Desc    : ""
 
+from __future__ import print_function
 import ipaddr
 import re
 
@@ -31,6 +32,6 @@ def parse_target(host_list):
         elif re_url_port.match(host):
             result_list.append(host)
         else:
-            print("[!]", host, 'Target is not recognized as legal')
+            print(("[!]", host, 'Target is not recognized as legal'))
     return result_list
 
