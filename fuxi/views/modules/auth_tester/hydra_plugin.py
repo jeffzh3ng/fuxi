@@ -5,10 +5,13 @@
 # @File    : hydra_plugin.py
 # @Desc    : ""
 
+import os
+import signal
 import shlex
 import random
 import string
 import re
+from datetime import datetime
 from subprocess import PIPE, Popen
 
 
@@ -26,9 +29,17 @@ class HydraScanner:
 
     def scanner(self):
         command = self._format_args()
-        print(command)
+        start_time = datetime.now()
         process = Popen(command, stdout=PIPE, stderr=PIPE)
         try:
+            while process.poll() is None:
+                now_time = datetime.now()
+                if (now_time - start_time).seconds > 20:
+                    try:
+                        os.kill(process.pid, signal.SIGTERM)
+                    except OSError as e:
+                        print(process.pid, e)
+                    return False
             (self.stdout, self.stderr) = process.communicate()
         except Exception as e:
             print(process.pid, e)
@@ -102,8 +113,17 @@ class ServiceCheck:
     def service_check(self):
         print("[*] Service Check %s %s" % (self.target, self.service))
         command = self._format_args()
+        start_time = datetime.now()
         process = Popen(command, stdout=PIPE, stderr=PIPE)
         try:
+            while process.poll() is None:
+                now_time = datetime.now()
+                if (now_time - start_time).seconds > 10:
+                    try:
+                        os.kill(process.pid, signal.SIGTERM)
+                    except OSError as e:
+                        print(process.pid, e)
+                    return False
             (self.stdout, self.stderr) = process.communicate()
         except Exception as e:
             print(process.pid, e)

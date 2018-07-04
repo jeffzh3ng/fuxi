@@ -54,7 +54,8 @@ class AuthCrack:
         connectiondb(auth_db).update_one({"_id": self.task_id}, {"$set": {"status": "Processing"}})
         # start host check
         tmp_result = []
-        print("[*] %s Service Check..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        check_time = datetime.now()
+        print("[*] %s Service Check..." % check_time.strftime("%Y-%m-%d %H:%M:%S"))
         for service in self.service_list:
             # Filter online host
             pool_a = Pool(processes=self.processes)
@@ -79,12 +80,14 @@ class AuthCrack:
             self.check_result[service] = self.online_target
             self.online_target = []
             tmp_result = []
-        print("[*] %s Service Check Done..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        check_end_time = datetime.now()
+        print("[*] %s Service Check Done..." % check_end_time.strftime("%Y-%m-%d %H:%M:%S"))
+        print("[*] Service check used time: %ss" % (check_end_time - check_time).seconds)
         # start crack
         print("[*] %s Crack Start..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         pool_b = Pool(processes=self.processes)
         for service, target_list in self.check_result.items():
-            print(service, target_list)
+            # print(service, target_list)
             self.result.append(pool_b.apply_async(hydra_scanner, (target_list, service, self.username_list,
                                                                   self.password_list, self.args)))
         pool_b.close()
@@ -98,6 +101,7 @@ class AuthCrack:
                     username = i['username']
                     password = i['password']
                     self.save_result(target, service, username, password)
+        print("[*] Service check used time: %ss" % (datetime.now() - check_time).seconds)
         print("[*] %s Saving result..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         connectiondb(auth_db).update_one({"_id": self.task_id}, {"$set": {
             "status": "Completed",
