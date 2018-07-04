@@ -63,7 +63,7 @@ class HydraScanner:
                 for username in self.username_list:
                     for password in self.password_list:
                         dict_file.write(username + ":" + password + "\n")
-            command = 'hydra -w 15 %s -M %s -M %s %s' % (self.args, dict_path, target_path, self.service)
+            command = 'hydra -w 15 %s -C %s -M %s %s' % (self.args, dict_path, target_path, self.service)
         return shlex.split(command)
 
     def _format_res(self):
