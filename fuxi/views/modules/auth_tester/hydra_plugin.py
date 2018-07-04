@@ -5,84 +5,126 @@
 # @File    : hydra_plugin.py
 # @Desc    : ""
 
-import os
-import signal
+import shlex
+import random
+import string
+import re
 from subprocess import PIPE, Popen
-from datetime import datetime
 
 
 class HydraScanner:
 
-    def __init__(self, args):
-        if '-s' in args:
-            self.target = args[-2] + ':' + args[args.index('-s') + 1]
-        else:
-            self.target = args[-2]
-        self.service = args[-1]
-        if '-l' in args:
-            self.username = args[args.index('-l') + 1]
-        else:
-            self.username = 'None'
-        if '-p' in args:
-            self.password = args[args.index('-p') + 1]
-        else:
-            self.password = 'None'
+    def __init__(self, target_list, service, username_list, password_list, args):
+        self.target_list = target_list
+        self.service = service
+        self.username_list = username_list
+        self.password_list = password_list
         self.args = args
+        self.stdout = ''
+        self.stderr = ''
+        self.result = []
 
     def scanner(self):
-        print("[*] Target:%s  Service:%s  Username:%s  Password:%s" %
-              (self.target, self.service, self.username, self.password))
-        start_time = datetime.now()
-        process = Popen(self.args, stdout=PIPE, stderr=PIPE)
+        command = self._format_args()
+        print(command)
+        process = Popen(command, stdout=PIPE, stderr=PIPE)
         try:
-            while process.poll() is None:
-                now_time = datetime.now()
-                if (now_time - start_time).seconds > 30:
-                    try:
-                        os.kill(process.pid, signal.SIGTERM)
-                    except OSError as e:
-                        print(process.pid, e)
-                    return False
-            (stdout, stderr) = process.communicate()
-            if 'successfully' in stdout and "[" + self.service + "]" in stdout:
-                result = {
-                    "target": self.target,
-                    "service": self.service,
-                    "username": self.username,
-                    "password": self.password,
-                }
-                return result
+            (self.stdout, self.stderr) = process.communicate()
         except Exception as e:
-            process.kill()
-            print(self.target, process, e)
-            return False
+            print(process.pid, e)
+        return self._format_res()
+
+    def _format_args(self):
+        dict_path = '/tmp/hydra_dict_' + ''.join(random.sample(string.ascii_letters + string.digits, 8))
+        target_path = '/tmp/hydra_target_' + ''.join(random.sample(string.ascii_letters + string.digits, 8))
+
+        with open(target_path, 'w') as target_file:
+            for target in self.target_list:
+                target_file.write(target + "\n")
+
+        if self.service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
+            with open(dict_path, 'w') as dict_file:
+                for password in self.password_list:
+                    dict_file.write(password + "\n")
+            command = 'hydra -w 15 %s -P %s -M %s %s' % (self.args, dict_path, target_path, self.service)
+        else:
+            with open(dict_path, 'w') as dict_file:
+                for username in self.username_list:
+                    for password in self.password_list:
+                        dict_file.write(username + ":" + password + "\n")
+            command = 'hydra -w 15 %s -M %s -M %s %s' % (self.args, dict_path, target_path, self.service)
+        return shlex.split(command)
+
+    def _format_res(self):
+        result_list = []
+        result = {}
+        pattern_res = '(\[\d+\]\[%s\]\shost:\s\d+\.\d+\.\d+\.\d+.*?)\n' % self.service
+        pattern_host = 'host:\s(\d+\.\d+\.\d+\.\d+)\s'
+        pattern_username = 'login:\s(.+?)\s+password:'
+        pattern_password = 'password:\s(.+?)$'
+        re_result = re.findall(pattern_res, self.stdout)
+        for res in re_result:
+            try:
+                if re.findall(pattern_host, res):
+                    host = re.findall(pattern_host, res)[0]
+                else:
+                    host = 'None'
+                if re.findall(pattern_username, res):
+                    username = re.findall(pattern_username, res)[0]
+                else:
+                    username = "None"
+                if re.findall(pattern_password, res):
+                    password = re.findall(pattern_password, res)[0]
+                else:
+                    password = "None"
+                result['target'] = host
+                result['service'] = self.service
+                result['username'] = username
+                result['password'] = password
+                result_list.append(result)
+                result = {}
+            except Exception as e:
+                print(res, e)
+        return result_list
+
+
+class ServiceCheck:
+
+    def __init__(self, target, service, args):
+        self.target = target
+        self.service = service
+        self.args = args
+        self.username = 'None'
+        self.password = 'None'
+        self.stdout = ''
+        self.stderr = ''
+
+    def service_check(self):
+        print("[*] Service Check %s %s" % (self.target, self.service))
+        command = self._format_args()
+        process = Popen(command, stdout=PIPE, stderr=PIPE)
+        try:
+            (self.stdout, self.stderr) = process.communicate()
+        except Exception as e:
+            print(process.pid, e)
+        return self.host_check()
+
+    def _format_args(self):
+        if self.service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
+            command = 'hydra -w 30 %s -p %s %s://%s' % (self.args, self.password, self.service, self.target)
+        else:
+            command = 'hydra -w 30 %s -l %s -p %s %s://%s' % (self.args, self.username, self.password,
+                                                              self.service, self.target)
+        return shlex.split(command)
 
     def host_check(self):
-        print("[*] Service Check: %s %s" % (self.target, self.service))
-        start_time = datetime.now()
-        process = Popen(self.args, stdout=PIPE, stderr=PIPE)
-        try:
-            while process.poll() is None:
-                now_time = datetime.now()
-                if (now_time - start_time).seconds > 30:
-                    try:
-                        os.kill(process.pid, signal.SIGTERM)
-                    except OSError as e:
-                        print(process.pid, e)
-                    return False
-            (stdout, stderr) = process.communicate()
-            if "successfully" in stdout:
-                return {"target": self.target, "result": {'username': self.username, "password": self.password}}
-            elif 'Anonymous success' in stderr:
-                return {"target": self.target, "result": {'username': self.username, "password": self.password}}
-            elif 'can not connect' in stderr:
-                return False
-            elif 'waiting for children to finish' in stdout:
-                return False
-            else:
-                return {"target": self.target, "result": False}
-        except Exception as e:
-            process.kill()
-            print(process, e)
+        if "successfully" in self.stdout and self.target in self.stdout:
+            return {"target": self.target, "result": {'username': self.username, "password": self.password}}
+        elif 'Anonymous success' in self.stderr:
+            return {"target": self.target, "result": {'username': self.username, "password": self.password}}
+        elif 'can not connect' in self.stderr:
             return False
-
+        elif 'waiting for children to finish' in self.stdout:
+            return False
+        else:
+            return {"target": self.target, "result": ""}

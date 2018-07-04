@@ -10,7 +10,7 @@ from threading import Thread
 from datetime import datetime
 from multiprocessing import Pool
 from fuxi.views.lib.mongo_db import connectiondb, db_name_conf
-from fuxi.views.modules.auth_tester.hydra_plugin import HydraScanner
+from fuxi.views.modules.auth_tester.hydra_plugin import HydraScanner, ServiceCheck
 from fuxi.views.lib.parse_target import parse_target
 from apscheduler.schedulers.blocking import BlockingScheduler
 from instance import config_name
@@ -20,15 +20,15 @@ weekpasswd_db = db_name_conf()['weekpasswd_db']
 auth_db = db_name_conf()['auth_db']
 
 
-def hydra_scanner(args):
-    start = HydraScanner(args)
+def hydra_scanner(target_list, service, username_list, password_list, args):
+    start = HydraScanner(target_list, service, username_list, password_list, args)
     result = start.scanner()
     return result
 
 
-def host_check(args):
-    start = HydraScanner(args)
-    result = start.host_check()
+def service_check(target_list, service, args):
+    start = ServiceCheck(target_list, service, args)
+    result = start.service_check()
     return result
 
 
@@ -42,6 +42,7 @@ class AuthCrack:
         self.username_list = self.db_cursor['username']
         self.password_list = self.db_cursor['password']
         self.target_list = parse_target(self.db_cursor['target'])
+        self.check_result = {}
         self.online_target = []
         self.service_list = self.db_cursor['service']
         self.args = self.db_cursor['args']
@@ -50,19 +51,17 @@ class AuthCrack:
         self.week_count = 0
 
     def start_scan(self):
-        tmp_result = []
-        args = self.args
         connectiondb(auth_db).update_one({"_id": self.task_id}, {"$set": {"status": "Processing"}})
+        # start host check
+        tmp_result = []
+        print("[*] %s Service Check..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         for service in self.service_list:
             # Filter online host
-            print("[*] %s Service Checking..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             pool_a = Pool(processes=self.processes)
-            args_check = self._args_parse(service, 'check')
-            for args in args_check:
-                tmp_result.append(pool_a.apply_async(host_check, (args,)))
+            for target in self.target_list:
+                tmp_result.append(pool_a.apply_async(service_check, (target, service, self.args)))
             pool_a.close()
             pool_a.join()
-            print("[*] %s Service Checked Done..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             for res_a in tmp_result:
                 if res_a.get():
                     target = res_a.get()['target']
@@ -77,24 +76,28 @@ class AuthCrack:
                         self.save_result(target, service, username, password)
                     else:
                         self.online_target.append(target)
-            tmp_result = []
-            # start crack
-            print("[*] %s Crack Start..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            pool_b = Pool(processes=self.processes)
-            args_crack = self._args_parse(service, 'crack')
-            for args in args_crack:
-                self.result.append(pool_b.apply_async(hydra_scanner, (args,)))
-            pool_b.close()
-            pool_b.join()
+            self.check_result[service] = self.online_target
             self.online_target = []
+            tmp_result = []
+        print("[*] %s Service Check Done..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        # start crack
+        print("[*] %s Crack Start..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        pool_b = Pool(processes=self.processes)
+        for service, target_list in self.check_result.items():
+            print(service, target_list)
+            self.result.append(pool_b.apply_async(hydra_scanner, (target_list, service, self.username_list,
+                                                                  self.password_list, self.args)))
+        pool_b.close()
+        pool_b.join()
         print("[*] %s Crack Done..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         for res_b in self.result:
             if res_b.get():
-                target = res_b.get()['target']
-                service = res_b.get()['service']
-                username = res_b.get()['username']
-                password = res_b.get()['password']
-                self.save_result(target, service, username, password)
+                for i in res_b.get():
+                    target = i['target']
+                    service = i['service']
+                    username = i['username']
+                    password = i['password']
+                    self.save_result(target, service, username, password)
         print("[*] %s Saving result..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         connectiondb(auth_db).update_one({"_id": self.task_id}, {"$set": {
             "status": "Completed",
@@ -115,58 +118,6 @@ class AuthCrack:
         }
         self.week_count += 1
         connectiondb(weekpasswd_db).insert_one(data)
-
-    def _args_parse(self, service, opt):
-        args_list = []
-        new_args = [self.args]
-        while '' in new_args:
-            new_args.remove('')
-        if opt == 'check':
-            for target in self.target_list:
-                if ":" in target:
-                    target_l = target.split(":")
-                    if target_l[-1].isdigit():
-                        port = target_l[-1]
-                        del target_l[-1]
-                        target = ''.join(target_l)
-                        if '-s ' + str(port) not in new_args:
-                            new_args.append('-s ' + str(port))
-                if service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
-                    if len(new_args) > 0:
-                        command = ['hydra', '-w 30', '-t 1', '-p', 'test'] + new_args + [target] + [service]
-                    else:
-                        command = ['hydra', '-w 30', '-t 1', '-p', 'test'] + [target] + [service]
-                else:
-                    if len(new_args) > 0:
-                        command = ['hydra', '-w 30', '-t 1', '-l', 'test', '-p', 'test'] + new_args + [target] + [service]
-                    else:
-                        command = ['hydra', '-w 30', '-t 1', '-l', 'test', '-p', 'test'] + [target] + [service]
-                args_list.append(command)
-        elif opt == 'crack':
-            for target in self.online_target:
-                if ":" in target:
-                    target_l = target.split(":")
-                    if target_l[-1].isdigit():
-                        port = target_l[-1]
-                        del target_l[-1]
-                        target = ''.join(target_l)
-                        new_args.append('-s ' + str(port))
-                if service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
-                    for password in self.password_list:
-                        if len(new_args) > 0:
-                            command = ['hydra', '-w 30', '-t 1', '-p', password] + new_args + [target] + [service]
-                        else:
-                            command = ['hydra', '-w 30', '-t 1', '-p', password] + [target] + [service]
-                        args_list.append(command)
-                else:
-                    for username in self.username_list:
-                        for password in self.password_list:
-                            if len(new_args) > 0:
-                                command = ['hydra', '-w 30', '-t 1', '-l', username, '-p', password] + new_args + [target] + [service]
-                            else:
-                                command = ['hydra', '-w 30', '-t 1', '-l', username, '-p', password] + [target] + [service]
-                            args_list.append(command)
-        return args_list
 
 
 class AuthTesterLoop:
