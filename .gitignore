@@ -2,5 +2,5 @@
 .idea/
 tests/
 fuxi/views/modules/scanner/pocsuite_plugin/
-logs/
+logs/log.log
 instance/

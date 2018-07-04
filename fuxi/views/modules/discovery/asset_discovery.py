@@ -30,7 +30,7 @@ class AssetDiscovery:
         self.host_list = parse_target(connectiondb(asset_db).find_one({"_id": self.asset_id})['asset_host'])
 
     def set_discovery(self):
-        print(self.asset_id, "Discovery start...")
+        print("[*] %s Discovery start..." % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
         pool_port = Pool(processes=self.processes)
         for host in self.host_list:
             self.result_tmp.append(pool_port.apply_async(port_scanner, (host, self.port_list)))
@@ -44,7 +44,10 @@ class AssetDiscovery:
             except Exception as e:
                 print(e)
                 pass
+        print("[*] %s Discovery done..." % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+        print("[*] %s Saving discovery result..." % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
         self.save_result()
+        print("[*] %s Save discovery done..." % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
     def save_result(self):
         if connectiondb(server_db).find_one({"asset_id": self.asset_id}):
@@ -54,8 +57,10 @@ class AssetDiscovery:
             res['asset_id'] = self.asset_id
             res['tag'] = ""
             res['date'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            connectiondb(server_db).insert(res, check_keys=False)
-        print(self.asset_id, "Discovery done...")
+            try:
+                connectiondb(server_db).insert_one(res)
+            except Exception as e:
+                print("[!] Save discovery result error %s" % e)
 
 
 def port_scanner(host, port_list):

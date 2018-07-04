@@ -30,6 +30,8 @@ class HydraScanner:
         self.args = args
 
     def scanner(self):
+        print("[*] Target:%s  Service:%s  Username:%s  Password:%s" %
+              (self.target, self.service, self.username, self.password))
         start_time = datetime.now()
         process = Popen(self.args, stdout=PIPE, stderr=PIPE)
         try:
@@ -52,10 +54,11 @@ class HydraScanner:
                 return result
         except Exception as e:
             process.kill()
-            print(process, e)
+            print(self.target, process, e)
             return False
 
     def host_check(self):
+        print("[*] Service Check: %s %s" % (self.target, self.service))
         start_time = datetime.now()
         process = Popen(self.args, stdout=PIPE, stderr=PIPE)
         try:

@@ -55,12 +55,14 @@ class AuthCrack:
         connectiondb(auth_db).update_one({"_id": self.task_id}, {"$set": {"status": "Processing"}})
         for service in self.service_list:
             # Filter online host
+            print("[*] %s Service Checking..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             pool_a = Pool(processes=self.processes)
             args_check = self._args_parse(service, 'check')
             for args in args_check:
                 tmp_result.append(pool_a.apply_async(host_check, (args,)))
             pool_a.close()
             pool_a.join()
+            print("[*] %s Service Checked Done..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             for res_a in tmp_result:
                 if res_a.get():
                     target = res_a.get()['target']
@@ -76,6 +78,7 @@ class AuthCrack:
                     else:
                         self.online_target.append(target)
             # start crack
+            print("[*] %s Crack Start..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             pool_b = Pool(processes=self.processes)
             args_crack = self._args_parse(service, 'crack')
             for args in args_crack:
@@ -83,6 +86,7 @@ class AuthCrack:
             pool_b.close()
             pool_b.join()
             self.online_target = []
+        print("[*] %s Crack Done..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         for res_b in self.result:
             if res_b.get():
                 target = res_b.get()['target']
@@ -90,10 +94,12 @@ class AuthCrack:
                 username = res_b.get()['username']
                 password = res_b.get()['password']
                 self.save_result(target, service, username, password)
+        print("[*] %s Saving result..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         connectiondb(auth_db).update_one({"_id": self.task_id}, {"$set": {
             "status": "Completed",
             "week_count": self.week_count,
         }})
+        print("[*] %s Save result done..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     def save_result(self, target, service, username, password):
         data = {
