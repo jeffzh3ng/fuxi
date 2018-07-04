@@ -71,7 +71,7 @@ class HydraScanner:
                         print(process.pid, e)
                     return False
             (stdout, stderr) = process.communicate()
-            if "successfully" in stdout and self.target in stdout:
+            if "successfully" in stdout:
                 return {"target": self.target, "result": {'username': self.username, "password": self.password}}
             elif 'Anonymous success' in stderr:
                 return {"target": self.target, "result": {'username': self.username, "password": self.password}}
@@ -80,7 +80,7 @@ class HydraScanner:
             elif 'waiting for children to finish' in stdout:
                 return False
             else:
-                return {"target": self.target, "result": ""}
+                return {"target": self.target, "result": False}
         except Exception as e:
             process.kill()
             print(process, e)

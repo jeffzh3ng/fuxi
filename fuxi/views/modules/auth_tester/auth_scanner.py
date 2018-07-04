@@ -77,6 +77,7 @@ class AuthCrack:
                         self.save_result(target, service, username, password)
                     else:
                         self.online_target.append(target)
+            tmp_result = []
             # start crack
             print("[*] %s Crack Start..." % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             pool_b = Pool(processes=self.processes)
@@ -132,14 +133,14 @@ class AuthCrack:
                             new_args.append('-s ' + str(port))
                 if service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
                     if len(new_args) > 0:
-                        command = ['hydra', '-w 30', '-t 1', '-p', ''] + new_args + [target] + [service]
+                        command = ['hydra', '-w 30', '-t 1', '-p', 'test'] + new_args + [target] + [service]
                     else:
-                        command = ['hydra', '-w 30', '-t 1', '-p', ''] + [target] + [service]
+                        command = ['hydra', '-w 30', '-t 1', '-p', 'test'] + [target] + [service]
                 else:
                     if len(new_args) > 0:
-                        command = ['hydra', '-w 30', '-t 1', '-l', '', '-p', ''] + new_args + [target] + [service]
+                        command = ['hydra', '-w 30', '-t 1', '-l', 'test', '-p', 'test'] + new_args + [target] + [service]
                     else:
-                        command = ['hydra', '-w 30', '-t 1', '-l', '', '-p', ''] + [target] + [service]
+                        command = ['hydra', '-w 30', '-t 1', '-l', 'test', '-p', 'test'] + [target] + [service]
                 args_list.append(command)
         elif opt == 'crack':
             for target in self.online_target:
