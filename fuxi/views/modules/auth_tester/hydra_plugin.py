@@ -23,47 +23,45 @@ class HydraScanner:
         self.username_list = username_list
         self.password_list = password_list
         self.args = args
+        self.dict_path = '/tmp/hydra_dict_' + ''.join(random.sample(string.ascii_letters + string.digits, 8))
+        self.target_path = '/tmp/hydra_target_' + ''.join(random.sample(string.ascii_letters + string.digits, 8))
         self.stdout = ''
         self.stderr = ''
         self.result = []
 
     def scanner(self):
         command = self._format_args()
-        start_time = datetime.now()
         process = Popen(command, stdout=PIPE, stderr=PIPE)
         try:
-            while process.poll() is None:
-                now_time = datetime.now()
-                if (now_time - start_time).seconds > 20:
-                    try:
-                        os.kill(process.pid, signal.SIGTERM)
-                    except OSError as e:
-                        print(process.pid, e)
-                    return False
             (self.stdout, self.stderr) = process.communicate()
         except Exception as e:
             print(process.pid, e)
+        if os.path.exists(self.dict_path):
+            os.remove(self.dict_path)
+        if os.path.exists(self.target_path):
+            os.remove(self.target_path)
         return self._format_res()
 
     def _format_args(self):
-        dict_path = '/tmp/hydra_dict_' + ''.join(random.sample(string.ascii_letters + string.digits, 8))
-        target_path = '/tmp/hydra_target_' + ''.join(random.sample(string.ascii_letters + string.digits, 8))
-
-        with open(target_path, 'w') as target_file:
+        # list of servers to attack, one entry per line, ':' to specify port
+        with open(self.target_path, 'w') as target_file:
             for target in self.target_list:
                 target_file.write(target + "\n")
-
+        # The redis, cisco, oracle-listener, s7-300, snmp and vnc modules
+        # are only using the -p or -P option, not login (-l, -L) or colon file (-C)
         if self.service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
-            with open(dict_path, 'w') as dict_file:
+            with open(self.dict_path, 'w') as dict_file:
                 for password in self.password_list:
                     dict_file.write(password + "\n")
-            command = 'hydra -w 15 %s -P %s -M %s %s' % (self.args, dict_path, target_path, self.service)
+            command = 'hydra -w 15 %s -P %s -M %s %s' % (self.args, self.dict_path, self.target_path, self.service)
         else:
-            with open(dict_path, 'w') as dict_file:
+            # colon separated "login:pass" format, instead of -L/-P options
+            with open(self.dict_path, 'w') as dict_file:
                 for username in self.username_list:
                     for password in self.password_list:
                         dict_file.write(username + ":" + password + "\n")
-            command = 'hydra -w 15 %s -C %s -M %s %s' % (self.args, dict_path, target_path, self.service)
+            command = 'hydra -w 15 %s -C %s -M %s %s' % (self.args, self.dict_path, self.target_path, self.service)
+            # hydra -C /tmp/hydra_dict_84V9H6hx -M /tmp/hydra_target_cIjX1prQ redis
         return shlex.split(command)
 
     def _format_res(self):
@@ -131,8 +129,10 @@ class ServiceCheck:
 
     def _format_args(self):
         if self.service in ['redis', 'cisco', 'oracle-listener', 's7-300', 'snmp', 'vnc']:
+            # hydra -w 30 -p 123456 redis://192.168.1.1
             command = 'hydra -w 30 %s -p %s %s://%s' % (self.args, self.password, self.service, self.target)
         else:
+            # hydra -w 30 -l root -p 123456 mysql://192.168.1.1
             command = 'hydra -w 30 %s -l %s -p %s %s://%s' % (self.args, self.username, self.password,
                                                               self.service, self.target)
         return shlex.split(command)
@@ -141,6 +141,8 @@ class ServiceCheck:
         if "successfully" in self.stdout and self.target in self.stdout:
             return {"target": self.target, "result": {'username': self.username, "password": self.password}}
         elif 'Anonymous success' in self.stderr:
+            return {"target": self.target, "result": {'username': self.username, "password": self.password}}
+        elif 'The server does not require password' in self.stderr:
             return {"target": self.target, "result": {'username': self.username, "password": self.password}}
         elif 'can not connect' in self.stderr:
             return False
