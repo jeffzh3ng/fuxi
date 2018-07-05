@@ -116,7 +116,7 @@ class ServiceCheck:
         try:
             while process.poll() is None:
                 now_time = datetime.now()
-                if (now_time - start_time).seconds > 10:
+                if (now_time - start_time).seconds > 15:
                     try:
                         os.kill(process.pid, signal.SIGTERM)
                     except OSError as e:
@@ -142,7 +142,7 @@ class ServiceCheck:
             return {"target": self.target, "result": {'username': self.username, "password": self.password}}
         elif 'Anonymous success' in self.stderr:
             return {"target": self.target, "result": {'username': self.username, "password": self.password}}
-        elif 'The server does not require password' in self.stderr:
+        elif 'not require password' in self.stderr:
             return {"target": self.target, "result": {'username': self.username, "password": self.password}}
         elif 'can not connect' in self.stderr:
             return False
