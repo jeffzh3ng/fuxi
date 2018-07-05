@@ -101,7 +101,7 @@ class AuthCrack:
                     username = i['username']
                     password = i['password']
                     self.save_result(target, service, username, password)
-        print("[*] %s Service check used time: %ss" % (self.task_name, (datetime.now() - check_time).seconds))
+        print("[*] %s Crack used time: %ss" % (self.task_name, (datetime.now() - check_time).seconds))
         print("[*] %s %s Saving result..." % (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), self.task_name))
         connectiondb(auth_db).update_one({"_id": self.task_id}, {"$set": {
             "status": "Completed",
