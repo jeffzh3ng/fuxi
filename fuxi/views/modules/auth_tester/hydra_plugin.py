@@ -107,9 +107,13 @@ class ServiceCheck:
         self.password = 'None'
         self.stdout = ''
         self.stderr = ''
+        self.flag_list = [
+            'Anonymous success',
+            'not require password'
+        ]
 
     def service_check(self):
-        print("[*] Service Check %s %s" % (self.target, self.service))
+        # print("[*] Service Check %s %s" % (self.target, self.service))
         command = self._format_args()
         start_time = datetime.now()
         process = Popen(command, stdout=PIPE, stderr=PIPE)
@@ -138,11 +142,10 @@ class ServiceCheck:
         return shlex.split(command)
 
     def host_check(self):
+        for flag in self.flag_list:
+            if flag in self.stderr:
+                return {"target": self.target, "result": {'username': self.username, "password": self.password}}
         if "successfully" in self.stdout and self.target in self.stdout:
-            return {"target": self.target, "result": {'username': self.username, "password": self.password}}
-        elif 'Anonymous success' in self.stderr:
-            return {"target": self.target, "result": {'username': self.username, "password": self.password}}
-        elif 'not require password' in self.stderr:
             return {"target": self.target, "result": {'username': self.username, "password": self.password}}
         elif 'can not connect' in self.stderr:
             return False
