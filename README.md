@@ -127,3 +127,4 @@ Port scanning is usually done in the initial phase of a penetration test in orde
 - Download: [.tar](https://github.com/jeffzh3ng/Fuxi-Scanner/tarball/master) or [.zip](https://github.com/jeffzh3ng/Fuxi-Scanner/zipball/master)
 - E-mail: [jeffzh3ng@gmail.com](mailto:jeffzh3ng@gmail.com)
 - Telegram: [jeffzhang](https://t.me/jeffzhang)
+- WeChat: [jeffzhang](https://fuxi-scanner.com/static/images/wx_20180605112603.jpg)
