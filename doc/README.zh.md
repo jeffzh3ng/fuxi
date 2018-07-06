@@ -137,3 +137,4 @@ AWVS 11 不能同时添加多个 URL 地址，该模块通过调用 AWVS 接口�
 - 下载: [.tar](https://github.com/jeffzh3ng/Fuxi-Scanner/tarball/master) or [.zip](https://github.com/jeffzh3ng/Fuxi-Scanner/zipball/master)
 - 邮箱: [jeffzh3ng@gmail.com](mailto:jeffzh3ng@gmail.com)
 - Telegram: [jeffzhang](https://t.me/jeffzhang)
+- 微信: [jeffzhang](https://fuxi-scanner.com/static/images/wx_20180605112603.jpg)
