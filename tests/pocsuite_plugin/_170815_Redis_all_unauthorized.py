@@ -23,7 +23,7 @@ class TestPOC(POCBase):
     appVersion = 'All'
     vulType = 'Unauthorized'
     desc = '''
-            redis 默认没有开启相关认证，黑客直接访问即可获取数据库中所有信息。
+            redis Unauthorized
     '''
     samples = ['128.36.23.111']
 

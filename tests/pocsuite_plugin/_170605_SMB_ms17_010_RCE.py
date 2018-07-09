@@ -25,7 +25,7 @@ class TestPOC(POCBase):
     appVersion = 'All'
     vulType = 'RCE'
     desc = '''
-            SMB Server存在多个远程执行代码漏洞 成功利用这些漏洞的攻击者可以获取在目标系统上执行代码的能力
+            SMB Server MS17-010
     '''
     samples = ['']
 
