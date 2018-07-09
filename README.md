@@ -61,7 +61,7 @@ The scanner module integrate an open-sourced remote vulnerability testing and Po
 
 Like Metasploit, it is a development kit for pentesters to develope their own exploits. Based on Pocsuite, you can write the most core code of PoC/Exp without caring about the resulting output etc. There are at least several hundred people writing PoC/Exp based on Pocsuite up to date.
 
-You can acquiring PoC scripts from [Seebug community](https://www.seebug.org/)
+Some plugins in the tests directory, which are updated from time to time. You can acquiring PoC scripts from [Seebug community](https://www.seebug.org/)
 
 The target can be IP, network segment or URL.
 

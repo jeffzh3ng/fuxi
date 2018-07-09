@@ -67,13 +67,13 @@ docker run -dit -p 5000:5000 -v /opt/data:/data -v /etc/localtime:/etc/localtime
 
 该模块通过调用知道创宇开源扫描器 Pocsuite 进行扫描，具备编码能力的可以根据模版快速开发插件，不具备插件编写能力的可以通过[SeeBug 社区](https://www.seebug.org/)获取
 
-本项目不提供漏洞插件，互联网上有项目提供了很多的 Pocsuite 插件，可以在Github上进行搜索，建议不要执着于插件数量，不要当成漏扫使用哦
+本项目tests目录下提供部分插件，不定期更新，互联网上有项目提供了很多的 Pocsuite 插件，可以在Github上进行搜索，建议不要执着于插件数量，不要当成漏扫使用哦
 
 扫描任务周期可以选择单次、每日、周及每月，扫描对象可以是单个 IP、网段或者 Url
 
 ![fuxi_poc_new_scan.png](images/fuxi_poc_new_scan.png)
 
-扫描插件通过插件模块中新增插件进行上传，插件必须符合 [PoC 编写规范及要求说明](https://github.com/knownsec/Pocsuite/blob/master/docs/CODING.md)
+扫描插件通过插件模块中新增插件进行上传，可以同时上传多个插件，插件必须符合 [PoC 编写规范及要求说明](https://github.com/knownsec/Pocsuite/blob/master/docs/CODING.md)
 
 ![fuxi_poc_plugin_management.png](images/fuxi_poc_plugin_management.png)
 
