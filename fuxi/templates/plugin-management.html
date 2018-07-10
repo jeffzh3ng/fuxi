@@ -21,7 +21,7 @@
         <div class="tile-body">
             <div id="sampleTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
                 <div class="row"><div class="col-sm-12 col-md-6">
-                    <div class="dataTables_length" id="sampleTable_length">
+                    <div class="dataTables_length" id="showDeleteDiv">
                         <a class="btn btn-primary" href="#" data-target="#newPlugin" data-toggle="modal" title="Add Plugins">
                             <i class="fa fa-gitlab fa-lg"></i> Add Plugins</a>
                         <br>
@@ -33,6 +33,9 @@
           <table class="table table-hover table-bordered" id="sampleTable">
             <thead>
               <tr class="text-center">
+                  <th>
+                      <input title="checkbox_all" onclick="selectAll();showDelete()" type="checkbox" name="allSelect" value="1" />
+                  </th>
                   <th>Name</th>
                   <th>App</th>
                   <th>Version</th>
@@ -44,6 +47,9 @@
             <tbody>
             {% for i in plugin_info %}
                 <tr class="center">
+                    <td class="text-center">
+                        <input title="checkbox" type="checkbox" onclick="showDelete()" name='select_id' value="{{ i['_id'] }}" />
+                    </td>
                     <td>
                         <a href="vulnerability?plugin={{ i['_id'] }}">{{ i['plugin_name'] }}</a>
                     </td>

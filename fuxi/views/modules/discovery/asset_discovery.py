@@ -15,7 +15,6 @@ from instance import config_name
 
 config_db = db_name_conf()['config_db']
 asset_db = db_name_conf()['asset_db']
-search_db = db_name_conf()['search_db']
 server_db = db_name_conf()['server_db']
 
 

@@ -30,10 +30,10 @@ plugin_db = db_name_conf()['plugin_db']
 
 
 # new plugin
-@plugin_management.route('/new-asset', methods=['GET', 'POST'])
-@login_check
-def new_plugin():
-    pass
+# @plugin_management.route('/new-asset', methods=['GET', 'POST'])
+# @login_check
+# def new_plugin():
+#     pass
 
 
 @plugin_management.route('/plugin-management', methods=['GET', 'POST'])
@@ -65,6 +65,19 @@ def plugin_view():
             # default view
             plugin_info = connectiondb(plugin_db).find()
             return render_template("plugin-management.html", plugin_info=plugin_info)
+    else:
+        # delete select plugin
+        if request.form.get('source') == 'delete_select':
+            plugins_list = request.form.get('plugins_list').split(',')
+            for plugin_id in plugins_list:
+                plugin_filename = connectiondb(plugin_db).find_one({"_id": ObjectId(plugin_id)})['plugin_filename']
+                if connectiondb(plugin_db).delete_one({'_id': ObjectId(plugin_id)}):
+                    try:
+                        os.remove(plugin_filename)
+                    except Exception as e:
+                        print(e)
+                        return 'success'
+            return 'success'
 
 
 @plugin_management.route('/plugin-upload', methods=['GET', 'POST'])

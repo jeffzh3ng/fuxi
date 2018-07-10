@@ -48,7 +48,7 @@ def db_name_conf():
     weekpasswd_db = app.config.get('WEEKPASSWD_DB')
     port_db = app.config.get('PORT_DB')
     auth_db = app.config.get('AUTH_DB')
-    search_db = app.config.get('SEARCH_DB')
+    # search_db = app.config.get('SEARCH_DB')
     acunetix_db = app.config.get('ACUNETIX_DB')
     db_name_dict = {
         'asset_db': asset_db,
@@ -62,7 +62,7 @@ def db_name_conf():
         'weekpasswd_db': weekpasswd_db,
         'port_db': port_db,
         'auth_db': auth_db,
-        'search_db': search_db,
+        # 'search_db': search_db,
         'acunetix_db': acunetix_db,
     }
     return db_name_dict
