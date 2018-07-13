@@ -40,7 +40,7 @@
                         </td>
                         <td>{{ i['domain'] }}</td>
                         <td>{{ i['title'] }}</td>
-                        <td title="{{ i['result'] | join(' | ')}}">{{ i['result'] | join(' | ') | truncate(25 , True) }}</td>
+                        <td title="{{ i['result'] }}">{{ i['result'] }}</td>
                         <td>{{ i['date'] }}</td>
                         <td class="text-center">
                             <a href="sudomain-list?delete={{ i['_id'] }}" title="delete" >
