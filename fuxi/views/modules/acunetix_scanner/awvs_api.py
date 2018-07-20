@@ -17,8 +17,6 @@ ProductionConfig = config.ProductionConfig
 app = Flask(__name__)
 app.config.from_object(ProductionConfig)
 
-requests.packages.urllib3.disable_warnings()
-
 
 class AcunetixScanner:
 
