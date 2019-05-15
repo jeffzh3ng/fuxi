@@ -1,6 +1,12 @@
+__pycache__/
+*.py[cod]
+*$py.class
 *.pyc
+*.log
+tests/
+.idea/
+instance/config.py
+.*
+*.db
 .idea/
 tests/
-fuxi/views/modules/scanner/pocsuite_plugin/
-logs/log.log
-instance/
