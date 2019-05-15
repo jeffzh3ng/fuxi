@@ -8,5 +8,6 @@ tests/
 instance/config.py
 .*
 *.db
+*.mmdb
 .idea/
 tests/
