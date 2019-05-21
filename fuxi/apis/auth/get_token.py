@@ -16,6 +16,7 @@ from sqlalchemy.exc import OperationalError
 from fuxi.libs.data.error import API_FAILED
 from fuxi.libs.common.logger import logger
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from fuxi.libs.core.token import access_token
 
 parser = reqparse.RequestParser()
 parser.add_argument('username', type=str)
@@ -74,6 +75,7 @@ class GetToken(Resource):
 
 
 class AddAdmin(Resource):
+    @access_token
     def post(self):
         try:
             args = parser.parse_args()
