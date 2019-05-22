@@ -54,15 +54,3 @@ T_XSS_RES = 'xss_res'
 
 T_PORT_TASKS = 'port_scan_tasks'
 
-
-# Administrator init
-if not MongoDB(T_ADMIN).find_one():
-    MongoDB(T_ADMIN).insert_one({
-        "username": "fuxi",
-        "password": "6f8f0f8f897a7bbe04a96fca65a90395",  # passwd: whoami
-        "salt": "76389b5c",
-        "nick": "Administrator",
-        "email": "jeffzh3ng@gmail.com",
-        "authority": [],
-        "date":  "2019-01-01 23:59:59"
-    })

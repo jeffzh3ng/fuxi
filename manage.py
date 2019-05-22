@@ -5,7 +5,7 @@
 # @File    : manage.py
 # @Desc    : ""
 
-from fuxi.router import app
+from fuxi.apis.router import app
 
 if __name__ == '__main__':
     host = app.config.get('SERVER_HOST')

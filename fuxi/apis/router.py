@@ -7,6 +7,7 @@
 
 from fuxi import app
 from flask_restful import Api
+from migration.db_init import databases_init
 from fuxi.views.blue_views import blue_views
 from fuxi.libs.core.data import SecurityModule
 from fuxi.apis.auth.access_control import AccessControl
@@ -20,8 +21,6 @@ from fuxi.apis.tools.json_hijacker import JsonHijackingTask, JsonPhishingData, \
     JsonHijackerAction, JsonHijackerDataAction
 from fuxi.apis.tools.xss import NewXssProject, XssProjects, NewXssPayload, XssPayloads, \
     XssPayloadAction, XssProjectAction, XssResultAction
-
-#
 from fuxi.apis.discovery.geoip_api import GeoAPI
 #
 app.register_blueprint(blue_views)
@@ -77,3 +76,6 @@ for rule in app.url_map.iter_rules():
             SecurityModule.ALL_MODULE.append(module)
             if not SecurityModule.MODULE_DESC.__contains__(endpoint[0]):
                 SecurityModule.MODULE_DESC[endpoint[0]] = desc
+
+# Databases init
+databases_init()
