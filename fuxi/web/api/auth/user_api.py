@@ -34,5 +34,5 @@ class WhoAreYouV1(Resource):
             data['email'] = _item['email']
             return Response.success(data=data)
         except Exception as e:
-            logger.error("get user info failed: {}".format(e))
+            logger.warning("get user info failed: {}".format(e))
             return Response.failed(message=e, data=data)

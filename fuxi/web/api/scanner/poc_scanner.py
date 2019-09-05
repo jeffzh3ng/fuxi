@@ -5,8 +5,10 @@
 # @File    : poc_scanner.py
 # @Desc    : ""
 
+from flask import session, request
 from bson import ObjectId
 from flask_restful import Resource, reqparse
+from fuxi.common.utils.poc_handler import poc_parser
 from fuxi.core.auth.token import auth
 from fuxi.common.utils.time_format import timestamp_to_str
 from fuxi.common.utils.logger import logger
@@ -45,6 +47,7 @@ class PocsuiteTasksV1(Resource):
                     "freq": item['freq'],
                     "status": item['status'],
                     "vul_count": item['vul_count'],
+                    "op": item['op'],
                     "date": timestamp_to_str(item['date']),
                     "end_date": timestamp_to_str(item['end_date']),
                 })
@@ -62,6 +65,7 @@ class PocsuiteTasksV1(Resource):
         :return:
         """
         try:
+            op = session.get('user')
             args = parser.parse_args()
             name = args['name']
             target = args['target'].split(',')
@@ -70,10 +74,11 @@ class PocsuiteTasksV1(Resource):
             freq = args['freq']
             if not args['quick']:
                 tid = DBPocsuiteTask.add(
-                    name=name, target=target, poc=poc_id, thread=thread, freq=freq
+                    name=name, target=target, poc=poc_id,
+                    thread=thread, freq=freq, op=op
                 )
                 t_poc_scanner.delay(tid)
-                logger.success("created the poc scan task {}".format(tid))
+                logger.success("{} created the poc scan task {}".format(op, tid))
                 return Response.success(message="The task was created successfully")
             else:
                 result = quick_poc_scanner(target, poc_id)
@@ -118,8 +123,9 @@ class PocsuiteTaskManageV1(Resource):
         :return:
         """
         try:
+            op = session.get('user')
             DBPocsuiteTask.delete_by_id(tid)
-            logger.info("deleted the pocsuite task: {}".format(tid))
+            logger.info("{} deleted the pocsuite task: {}".format(op, tid))
             return Response.success(message="successfully deleted")
         except Exception as e:
             msg = "delete poc task failed: {}".format(e)
@@ -157,6 +163,30 @@ class PocsuitePluginsV1(Resource):
             logger.error("get pocsuite plugin failed: {}".format(e))
             return Response.failed(message=e, data=data)
 
+    @auth
+    def post(self):
+        # 插件上传
+        try:
+            op = session.get('user')
+            file = request.files['file']
+            filename = file.filename
+            poc_str = file.read().decode("UTF-8")
+            # 调 poc_parser 方法正则匹配出插件信息
+            poc_data = poc_parser(poc_str)
+            pid = DBPocsuitePlugin.add(
+                name=poc_data['name'], poc_str=poc_str, filename=filename,
+                app=poc_data['app'], poc_type=poc_data['type'], op=op
+            )
+            if pid:
+                msg = "{} pocsuite plugin upload successful: {}".format(op, pid)
+                logger.success(msg)
+                return Response.success(message=msg)
+            else:
+                return Response.failed(message="pocsuite plugin upload failed")
+        except Exception as e:
+            logger.error("pocsuite plugin upload failed: {}".format(e))
+            return Response.failed(message=e)
+
 
 class PocsuitePluginManageV1(Resource):
     @auth
@@ -189,8 +219,9 @@ class PocsuitePluginManageV1(Resource):
         :return:
         """
         try:
+            op = session.get('user')
             DBPocsuitePlugin.delete_by_id(plugin_id)
-            logger.info("deleted the pocsuite plugin: {}".format(plugin_id))
+            logger.info("{} deleted the pocsuite plugin: {}".format(op, plugin_id))
             return Response.success(message="successfully deleted")
         except Exception as e:
             msg = "delete pocsuite plugin failed: {}".format(e)
@@ -269,8 +300,9 @@ class PocsuiteResultManageV1(Resource):
         :return:
         """
         try:
+            op = session.get('user')
             DBPocsuiteVul.delete_by_id(vul_id)
-            logger.info("deleted the vulnerability: {}".format(vul_id))
+            logger.info("{} deleted the vulnerability: {}".format(op, vul_id))
             return Response.success(message="successfully deleted")
         except Exception as e:
             msg = "delete pocsuite vulnerability failed: {}".format(e)

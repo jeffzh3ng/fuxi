@@ -24,8 +24,7 @@ def create_app(config_name):
         _app.config['MONGO_URI'] = "mongodb://{}:{}/{}".format(
             _app.config.get("MONGO_HOST"), _app.config.get("MONGO_PORT"), _app.config.get("MONGO_DB"),
             )
-        if config_name == "prod":
-            _app.config['SECRET_KEY'] = token_urlsafe()
+        _app.config['SECRET_KEY'] = token_urlsafe()
         CORS(_app, supports_credentials=True)
         return _app
     except Exception as e:

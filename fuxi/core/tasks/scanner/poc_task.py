@@ -10,7 +10,7 @@ from tempfile import gettempdir
 from datetime import datetime
 from fuxi.common.utils.pocsuite_api import pocsuite_scanner
 from fuxi.web.flask_app import fuxi_celery
-from fuxi.common.libs.target_parser import target_parse
+from fuxi.common.libs.target_handler import target_parse
 from fuxi.core.databases.orm.pocsuite import DBPocsuiteTask, \
     DBPocsuitePlugin, DBPocsuiteVul
 from fuxi.common.utils.logger import logger
@@ -56,6 +56,7 @@ def t_poc_scanner(task_id):
         target_list = target_parse(t_item['target'])
         poc_id_list = t_item['poc']
         thread = t_item['thread']
+        op = t_item['op']
         # 删除旧结果
         # MongoDB(T_POC_VULS).delete_many({"t_id": task_id})
         # 扫描开始前更改任务状态 running
@@ -77,7 +78,7 @@ def t_poc_scanner(task_id):
                         tid=task_id, poc=poc_id, task_name=task_name,
                         poc_name=poc_item['name'], status=_item['status'],
                         target=_item['target'], app=poc_item['app'],
-                        result=result
+                        result=result, op=op
                     )
                     if _item['status'] == "success":
                         count += 1
@@ -116,7 +117,6 @@ def schedule_poc_scanner():
     task_items = DBPocsuiteTask.get_list()
     for item in task_items:
         t_id = str(item['_id'])
-        thread = item['thread']
         freq = item['freq']
         end_date = item['end_date']
         status = item['status']
@@ -126,7 +126,7 @@ def schedule_poc_scanner():
                 plan_time = (datetime.now() - start_date).total_seconds()
                 if plan_time > 60 * 60 * 24:
                     logger.info("daily task running: poc scan {}".format(t_id))
-                    t_poc_scanner.delay(t_id, thread)
+                    t_poc_scanner.delay(t_id)
                     logger.info("daily task completed: poc scan {}".format(t_id))
 
         elif freq == 'weekly':
@@ -135,7 +135,7 @@ def schedule_poc_scanner():
                 plan_time = (datetime.now() - start_date).total_seconds()
                 if plan_time > 60 * 60 * 24 * 7:
                     logger.info("weekly task running: poc scan {}".format(t_id))
-                    t_poc_scanner.delay(t_id, thread)
+                    t_poc_scanner.delay(t_id)
                     logger.info("weekly task completed: poc scan {}".format(t_id))
 
         elif freq == 'monthly':
@@ -144,7 +144,7 @@ def schedule_poc_scanner():
                 plan_time = (datetime.now() - start_date).total_seconds()
                 if plan_time > 60 * 60 * 24 * 30:
                     logger.info("monthly task running: poc scan {}".format(t_id))
-                    t_poc_scanner.delay(t_id, thread)
+                    t_poc_scanner.delay(t_id)
                     logger.info("monthly task completed: poc scan {}".format(t_id))
 
 

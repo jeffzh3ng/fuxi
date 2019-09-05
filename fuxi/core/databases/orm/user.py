@@ -11,7 +11,7 @@ import hashlib
 from secrets import token_hex
 from fuxi.common.utils.logger import logger
 from fuxi.core.databases.db_mongo import mongo, T_ADMIN
-from fuxi.core.databases.orm.db_error import DatabaseError
+from fuxi.core.databases.db_error import DatabaseError
 
 
 class _DBFuxiAdmin:
@@ -73,10 +73,8 @@ class _DBFuxiAdmin:
         raise DatabaseError("username or password is incorrect")
 
     def token_check(self, token):
-        if mongo[self.table].find_one({"token": str(token)}):
-            return True
-        else:
-            return False
+        item = mongo[self.table].find_one({"token": str(token)})
+        return item if item else False
 
     def generate_token(self):
         return hashlib.sha1(os.urandom(self.urandom_count)).hexdigest()

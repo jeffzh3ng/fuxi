@@ -10,5 +10,4 @@ import random
 
 def random_str(length=12):
     seed = "1234567890abcdefghijklmnopqrstuvwxyz"
-    salt = ''.join(random.sample(seed, length))
-    return salt
+    return ''.join(random.sample(seed, length))

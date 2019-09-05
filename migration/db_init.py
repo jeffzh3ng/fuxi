@@ -9,7 +9,7 @@ import os
 import sys
 from fuxi.common.utils.logger import logger
 from sqlalchemy.exc import OperationalError
-from fuxi.common.utils.poc_parser import poc_parser
+from fuxi.common.utils.poc_handler import poc_parser
 from fuxi.core.databases.orm.user import DBFuxiAdmin
 from fuxi.core.databases.orm.pocsuite import DBPocsuitePlugin
 
@@ -29,7 +29,7 @@ def databases_init():
                     poc_data = poc_parser(poc_str)
                     DBPocsuitePlugin.add(
                         name=poc_data['name'], poc_str=poc_str, filename=poc_filename,
-                        app=poc_data['app'], poc_type=poc_data['type']
+                        app=poc_data['app'], poc_type=poc_data['type'], op="fuxi"
                     )
     except OperationalError:
         # 捕获数据库连接错误

@@ -16,5 +16,5 @@ def timestamp_to_str(timestamp):
             return "-"
         time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(timestamp)))
     except Exception as e:
-        logger.error("time format failed: timestamp to str, %s".format(e))
+        logger.warning("time format failed: timestamp to str, %s".format(e))
     return time_str

@@ -15,7 +15,7 @@ T_POC_TASKS = "poc_tasks"
 T_POC_PLUGINS = "poc_plugins"
 T_POC_VULS = "poc_vuls"
 
-T_HTTP_REQUESTS = "http_req"
+T_HTTP_REQUEST_LOG = "http_req"
 T_JSON_HIJACKER_TASK = 'json_hijacker_task'
 T_JSON_HIJACKER_RES = 'json_hijacker_res'
 T_XSS_PROJECTS = 'xss_projects'

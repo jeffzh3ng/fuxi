@@ -37,7 +37,7 @@ class UserManageV1(Resource):
             else:
                 return Response.failed(message="add admin failed", code=10401)
         except Exception as e:
-            logger.error("add admin failed: {}".format(e))
+            logger.warning("add admin failed: {}".format(e))
             return Response.failed(message=e)
 
 

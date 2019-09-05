@@ -9,7 +9,7 @@ import time
 from bson import ObjectId
 from fuxi.core.databases.db_mongo import mongo, T_POC_PLUGINS, T_POC_TASKS, T_POC_VULS
 from fuxi.common.utils.logger import logger
-from fuxi.core.databases.orm.db_error import DatabaseError
+from fuxi.core.databases.db_error import DatabaseError
 
 
 class _DBPocsuitePlugin:
@@ -25,12 +25,12 @@ class _DBPocsuitePlugin:
     def get_list(self, query=None, data_filter=None):
         return mongo[self.table].find(query, data_filter)
 
-    def add(self, name, poc_str, filename, app=None, poc_type=None):
+    def add(self, name, poc_str, filename, op, app=None, poc_type=None):
         if name and poc_str and filename:
             inserted_id = mongo[self.table].insert_one({
-                "name": name, "poc": poc_str, "app": app,
+                "name": name.strip(), "poc": poc_str, "app": app,
                 "type": poc_type, "filename": filename,
-                "date": int(time.time())
+                "date": int(time.time()), "op": op
             }).inserted_id
             return str(inserted_id)
         else:
@@ -63,13 +63,13 @@ class _DBPocsuiteTask:
     def get_list(self, query=None, data_filter=None):
         return mongo[self.table].find(query, data_filter)
 
-    def add(self, name, target, poc, thread, freq):
+    def add(self, name, target, poc, thread, freq, op):
         if name and target and poc and thread and freq:
             inserted_id = mongo[self.table].insert_one({
-                "name": name, "target": target, "poc": poc,
+                "name": name.strip(), "target": target, "poc": poc,
                 "thread": thread, "freq": freq,
                 "date": int(time.time()), "end_date": 0,
-                "status": "waiting", "vul_count": 0
+                "status": "waiting", "vul_count": 0, "op": str(op)
             }).inserted_id
             return str(inserted_id)
         else:
@@ -108,13 +108,13 @@ class _DBPocsuiteVul:
     def get_list(self, query=None, data_filter=None):
         return mongo[self.table].find(query, data_filter)
 
-    def add(self, tid, poc, task_name, poc_name, status, target, app, result=""):
+    def add(self, tid, poc, task_name, poc_name, status, target, app, op, result=""):
         if tid and poc and task_name and poc_name and status and target and app:
             inserted_id = mongo[self.table].insert_one({
                 "tid": tid, "poc": poc, "task_name": task_name,
                 "poc_name": poc_name, "status": status,
                 "target": target, "app": app, "result": result,
-                "date": int(time.time())
+                "date": int(time.time()), "op": op
             }).inserted_id
             return str(inserted_id)
         else:

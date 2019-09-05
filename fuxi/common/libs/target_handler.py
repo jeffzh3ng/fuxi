@@ -6,7 +6,8 @@
 # @Desc    : ""
 
 import re
-from fuxi.common.libs.ip_parser import IP
+from urllib.parse import urlparse, urlunparse
+from fuxi.common.libs.ip_handler import IP
 from fuxi.common.utils.logger import logger
 
 
@@ -50,3 +51,14 @@ def _url_parse(url):
         url = "http://" + url
     return url
 
+
+def callback_url_parser(url):
+    parsed_result = urlparse(url)
+    query = ""
+    for item in parsed_result.query.split('&'):
+        if "callback=" not in item:
+            query += item + "&"
+    query = query.strip('&') + "callback=?"
+    url_compos = (parsed_result.scheme, parsed_result.netloc, parsed_result.path,
+                  parsed_result.params, query, parsed_result.fragment)
+    return urlunparse(url_compos)
