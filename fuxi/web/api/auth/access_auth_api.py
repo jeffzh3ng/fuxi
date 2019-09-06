@@ -6,7 +6,7 @@
 # @Desc    : ""
 
 from flask import request
-from fuxi.core.databases.orm.user import DBFuxiAdmin
+from fuxi.core.databases.orm.auth.user_orm import DBFuxiAdmin
 from flask_restful import Resource, reqparse
 from fuxi.core.data.response import Response
 from fuxi.common.utils.logger import logger

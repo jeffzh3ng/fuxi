@@ -11,7 +11,7 @@ from datetime import datetime
 from fuxi.common.utils.pocsuite_api import pocsuite_scanner
 from fuxi.web.flask_app import fuxi_celery
 from fuxi.common.libs.target_handler import target_parse
-from fuxi.core.databases.orm.pocsuite import DBPocsuiteTask, \
+from fuxi.core.databases.orm.scanner.pocsuite_orm import DBPocsuiteTask, \
     DBPocsuitePlugin, DBPocsuiteVul
 from fuxi.common.utils.logger import logger
 

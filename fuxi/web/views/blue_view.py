@@ -12,6 +12,7 @@ from fuxi.core.data.response import Response, StatusCode
 from fuxi.common.utils.logger import logger
 from fuxi.core.databases.orm.exploit.jsonp_orm import DBExploitJsonpTask
 from fuxi.core.databases.orm.exploit.http_log_orm import DBHttpRequestLog
+from fuxi.core.databases.orm.exploit.xss_orm import DBXssTasks, DBXssResult
 
 blue_view = Blueprint('blue_views', __name__)
 
@@ -80,38 +81,40 @@ def http_log():
             return jsonify({"status": "failed", "data": ""})
 
 
-#
-#
-# @blue_view.route('/x/<path>', methods=['GET'])
-# def get_xss_payload(path):
-#     try:
-#         project_item = MongoDB(T_XSS_PROJECTS).find_one({"path": path})
-#         if project_item:
-#             count = project_item['count'] + 1
-#             MongoDB(T_XSS_PROJECTS).update_one({"path": path}, {'count': count})
-#             return "{}".format(project_item['payload'])
-#         else:
-#             return "Not Found"
-#     except Exception as e:
-#         logger.error("get xss payload: {}".format(e))
-#         return ERROR_MESSAGE
-#
-#
-# @blue_view.route('/xss', methods=['GET'])
-# def get_xss_data():
-#     try:
-#         salt = request.args.get('salt')
-#         data = request.args.get('data')
-#         url = request.args.get('url')
-#         if salt:
-#             MongoDB(T_XSS_RES).insert_one({
-#                 "salt": salt,
-#                 "url": url if url else '-',
-#                 "data": data if data else '-',
-#                 "ip": request.remote_addr if request.remote_addr else '0.0.0.0',
-#                 "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-#             })
-#     except Exception as e:
-#         logger.error("get xss data failed: {}".format(e))
-#     return "x"
-#
+@blue_view.route('/x/<path>', methods=['GET'])
+def get_xss_payload(path):
+    try:
+        project_item = DBXssTasks.get_detail_by_salt(path[:5])
+        if project_item:
+            return "{}".format(project_item['payload'])
+        else:
+            return "Not Found"
+    except Exception as e:
+        msg = "get xss payload: {}".format(e)
+        logger.warning(msg)
+        return Response.failed(message=msg)
+
+
+@blue_view.route('/xss', methods=['GET'])
+def get_xss_data():
+    try:
+        salt = request.args.get('salt')
+        data = request.args.get('data')
+        url = request.args.get('url')
+        client = request.remote_addr if request.remote_addr else '0.0.0.0'
+        referrer = request.referrer if request.referrer else '-'
+        extend = request.args.get('extend')
+        if salt:
+            item = DBXssTasks.get_detail_by_salt(salt)
+            if item:
+                DBXssResult.add(
+                    item['_id'], salt, client=client, referrer=referrer,
+                    url=url, data=data, extend=extend
+                )
+            return "Y"
+        else:
+            return "Missing Parameter: salt"
+    except Exception as e:
+        logger.warning("get xss data failed: {}".format(e))
+    return "x"
+

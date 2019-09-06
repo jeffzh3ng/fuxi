@@ -7,17 +7,16 @@
 
 import time
 from bson import ObjectId
+from fuxi.core.databases.orm.database_base import DatabaseBase
 from fuxi.core.databases.db_mongo import mongo, T_POC_PLUGINS, T_POC_TASKS, T_POC_VULS
 from fuxi.common.utils.logger import logger
 from fuxi.core.databases.db_error import DatabaseError
 
 
-class _DBPocsuitePlugin:
+class _DBPocsuitePlugin(DatabaseBase):
     def __init__(self):
+        DatabaseBase.__init__(self)
         self.table = T_POC_PLUGINS
-
-    def find_one(self):
-        return mongo[self.table].find_one()
 
     def get_detail_by_id(self, _id):
         return mongo[self.table].find_one({"_id": ObjectId(str(_id))})
@@ -37,9 +36,6 @@ class _DBPocsuitePlugin:
             logger.error("pocsuite plugin insert failed: invalid data")
             raise DatabaseError("invalid data")
 
-    def delete_by_id(self, _id):
-        return mongo[self.table].delete_one({"_id": ObjectId(str(_id))})
-
     def filter_by_keyword(self, keyword):
         keyword = keyword.lower()
         return mongo[self.table].find({
@@ -50,12 +46,10 @@ class _DBPocsuitePlugin:
         })
 
 
-class _DBPocsuiteTask:
+class _DBPocsuiteTask(DatabaseBase):
     def __init__(self):
+        DatabaseBase.__init__(self)
         self.table = T_POC_TASKS
-
-    def find_one(self):
-        return mongo[self.table].find_one()
 
     def get_detail_by_id(self, _id):
         return mongo[self.table].find_one({"_id": ObjectId(str(_id))})
@@ -76,9 +70,6 @@ class _DBPocsuiteTask:
             logger.error("pocsuite task insert failed: invalid data")
             raise DatabaseError("invalid data")
 
-    def delete_by_id(self, _id):
-        return mongo[self.table].delete_one({"_id": ObjectId(str(_id))})
-
     def update_by_id(self, tid, data):
         return mongo[self.table].update_one(
             {"_id": ObjectId(tid)}, {"$set": data}
@@ -95,12 +86,10 @@ class _DBPocsuiteTask:
         })
 
 
-class _DBPocsuiteVul:
+class _DBPocsuiteVul(DatabaseBase):
     def __init__(self):
+        DatabaseBase.__init__(self)
         self.table = T_POC_VULS
-
-    def find_one(self):
-        return mongo[self.table].find_one()
 
     def get_detail_by_id(self, _id):
         return mongo[self.table].find_one({"_id": ObjectId(str(_id))})
@@ -120,9 +109,6 @@ class _DBPocsuiteVul:
         else:
             logger.error("pocsuite scan result insert failed: invalid data")
             raise DatabaseError("invalid data")
-
-    def delete_by_id(self, _id):
-        return mongo[self.table].delete_one({"_id": ObjectId(str(_id))})
 
     def update_by_id(self, tid, data):
         return mongo[self.table].update_one(

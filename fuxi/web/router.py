@@ -20,6 +20,9 @@ from fuxi.web.api.scanner.poc_scanner import PocsuiteTasksV1, \
 from fuxi.web.api.exploit.jsonp_api import JsonpTasksV1, JsonpTaskManageV1, JsonDataReceiveV1, \
     JsonpResListV1, JsonpResManageV1
 from fuxi.web.api.exploit.http_request_api import HttpRequestLogV1, HttpRequestLogManageV1
+from fuxi.web.api.exploit.xss_api import XssTasksV1, XssPayloadsV1, XssTaskManageV1, \
+    XssPayloadManageV1, XssResultV1, XssResultManageV1
+from fuxi.web.api.discovery.port_api import PortScanTasksV1
 
 flask_app.register_blueprint(blue_view)
 api = Api(flask_app)
@@ -42,6 +45,13 @@ api.add_resource(JsonDataReceiveV1, "/api/v1/exploit/jsonp/data")
 api.add_resource(JsonpResManageV1, "/api/v1/exploit/jsonp/res/<rid>")
 api.add_resource(HttpRequestLogV1, "/api/v1/exploit/http")
 api.add_resource(HttpRequestLogManageV1, "/api/v1/exploit/http/<hid>")
+api.add_resource(XssTasksV1, "/api/v1/exploit/xss/task")
+api.add_resource(XssTaskManageV1, "/api/v1/exploit/xss/task/<tid>")
+api.add_resource(XssResultV1, "/api/v1/exploit/xss/task/res/<tid>")
+api.add_resource(XssPayloadsV1, "/api/v1/exploit/xss/payload")
+api.add_resource(XssPayloadManageV1, "/api/v1/exploit/xss/payload/<pid>")
+api.add_resource(XssResultManageV1, "/api/v1/exploit/xss/result/<rid>")
+api.add_resource(PortScanTasksV1, "/api/v1/discovery/port/task")
 
 # Databases init
 databases_init()

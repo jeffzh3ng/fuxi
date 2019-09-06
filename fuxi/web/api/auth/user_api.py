@@ -8,7 +8,7 @@
 from flask import request
 from flask_restful import Resource
 from fuxi.common.utils.logger import logger
-from fuxi.core.databases.orm.user import DBFuxiAdmin
+from fuxi.core.databases.orm.auth.user_orm import DBFuxiAdmin
 from fuxi.core.data.response import Response, StatusCode
 
 
@@ -34,5 +34,7 @@ class WhoAreYouV1(Resource):
             data['email'] = _item['email']
             return Response.success(data=data)
         except Exception as e:
+            if str(e) == "the access token is invalid":
+                return Response.failed(StatusCode.AUTH_FAILED, data=data)
             logger.warning("get user info failed: {}".format(e))
             return Response.failed(message=e, data=data)

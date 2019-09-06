@@ -9,7 +9,7 @@ from functools import wraps
 from flask import request, session
 from fuxi.web.flask_app import flask_app
 from fuxi.common.utils.logger import logger
-from fuxi.core.databases.orm.user import DBFuxiAdmin
+from fuxi.core.databases.orm.auth.user_orm import DBFuxiAdmin
 from fuxi.core.data.response import Response, StatusCode
 
 

@@ -13,7 +13,7 @@ from fuxi.core.auth.token import auth
 from fuxi.common.utils.time_format import timestamp_to_str
 from fuxi.common.utils.logger import logger
 from fuxi.core.data.response import Response
-from fuxi.core.databases.orm.pocsuite import DBPocsuitePlugin, DBPocsuiteTask, DBPocsuiteVul
+from fuxi.core.databases.orm.scanner.pocsuite_orm import DBPocsuitePlugin, DBPocsuiteTask, DBPocsuiteVul
 from fuxi.core.tasks.scanner.poc_task import t_poc_scanner, quick_poc_scanner
 
 

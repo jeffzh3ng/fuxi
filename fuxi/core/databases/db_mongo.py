@@ -18,7 +18,7 @@ T_POC_VULS = "poc_vuls"
 T_HTTP_REQUEST_LOG = "http_req"
 T_JSON_HIJACKER_TASK = 'json_hijacker_task'
 T_JSON_HIJACKER_RES = 'json_hijacker_res'
-T_XSS_PROJECTS = 'xss_projects'
+T_XSS_TASKS = 'xss_tasks'
 T_XSS_PAYLOADS = 'xss_payloads'
 T_XSS_RES = 'xss_res'
 
