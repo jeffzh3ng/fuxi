@@ -54,7 +54,7 @@ class PocsuiteTasksV1(Resource):
             return Response.success(data=data)
         except Exception as e:
             msg = "get pocsuite tasks failed: {}".format(e)
-            logger.error(msg)
+            logger.warning(msg)
             return Response.failed(message=msg, data=data)
 
     @auth
@@ -306,6 +306,6 @@ class PocsuiteResultManageV1(Resource):
             return Response.success(message="successfully deleted")
         except Exception as e:
             msg = "delete pocsuite vulnerability failed: {}".format(e)
-            logger.error(msg)
+            logger.warning(msg)
             return Response.failed(message=msg)
 

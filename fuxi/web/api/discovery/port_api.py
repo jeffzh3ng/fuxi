@@ -17,6 +17,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('name', type=str)
 parser.add_argument('target', type=str)
 parser.add_argument('port', type=str)
+parser.add_argument('option', type=str)
 parser.add_argument('threat', type=int)
 
 
@@ -33,7 +34,7 @@ class PortScanTasksV1(Resource):
                     'target': item['target'],
                     'port': item['port'],
                     'threat': item['threat'],
-                    'args': item['args'],
+                    'option': item['option'],
                     'status': item['status'],
                     'date': timestamp_to_str(item['date']),
                     'op': item['op']
@@ -41,8 +42,8 @@ class PortScanTasksV1(Resource):
                 data.append(tmp_data)
             return Response.success(data=data)
         except Exception as e:
-            msg = "get jsonp hijacking task list failed: {}".format(e)
-            logger.error(msg)
+            msg = "get port scan task list failed: {}".format(e)
+            logger.warning(msg)
             return Response.failed(data=data, message=msg)
 
     @auth
@@ -50,12 +51,13 @@ class PortScanTasksV1(Resource):
         try:
             op = session.get('user')
             args = parser.parse_args()
-            name = args['name'].strip()
+            name = args['name']
             target_list = [target.strip() for target in args['target'].split(',')]
-            port_list = [int(port.strip()) for port in args['port'].split(',')]
+            port_list = [int(port.strip()) for port in args['port'].split(',')] if args['port'] else []
+            option = args['option']
             threat = args['threat']
             tid = DBPortScanTasks.add(
-                name=name, target=target_list, port=port_list, threat=threat, op=op
+                name=name, target=target_list, port=port_list, option=option, threat=threat, op=op
             )
             logger.success("{} created the port scan task: {}".format(op, tid))
             return Response.success(message="The task was created successfully")

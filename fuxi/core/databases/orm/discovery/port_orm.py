@@ -17,10 +17,10 @@ class _DBPortScanTasks(DatabaseBase):
         DatabaseBase.__init__(self)
         self.table = T_PORT_TASKS
 
-    def add(self, name, target, port, threat, args, op):
-        if name and target and port and threat and op:
+    def add(self, name, target, port, option, threat, op):
+        if name and target and threat and op:
             inserted_id = mongo[self.table].insert_one({
-                "name": name.strip(), "target": target, "port": port, "args": args,
+                "name": name.strip(), "target": target, "port": port, "option": option,
                 "threat": threat, "op": op, "status": "waiting", "date": int(time.time())
             }).inserted_id
             return str(inserted_id)
