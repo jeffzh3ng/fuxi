@@ -31,6 +31,8 @@ class DevelopmentConfig(BaseConfig):
     MONGO_HOST = '127.0.0.1'
     MONGO_PORT = 27017
     MONGO_DB = 'fuxi_dev'
+    MONGO_USER = ''
+    MONGO_PASSWD = ''
 
 
 class ProductionConfig(BaseConfig):

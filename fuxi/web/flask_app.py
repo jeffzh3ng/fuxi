@@ -21,9 +21,15 @@ def create_app(config_name):
         _app.config['CELERY_BROKER_URL'] = "redis://{}:{}/{}".format(
             _app.config.get("REDIS_HOST"), _app.config.get("REDIS_PORT"), _app.config.get("REDIS_DB"),
             )
-        _app.config['MONGO_URI'] = "mongodb://{}:{}/{}".format(
-            _app.config.get("MONGO_HOST"), _app.config.get("MONGO_PORT"), _app.config.get("MONGO_DB"),
+        if _app.config.get('MONGO_USER') and _app.config.get('MONGO_PASSWD'):
+            _app.config['MONGO_URI'] = "mongodb://{}:{}@{}:{}/{}".format(
+                _app.config.get("MONGO_USER"), _app.config.get("MONGO_PASSWD"),
+                _app.config.get("MONGO_HOST"), _app.config.get("MONGO_PORT"), _app.config.get("MONGO_DB"),
             )
+        else:
+            _app.config['MONGO_URI'] = "mongodb://{}:{}/{}".format(
+                _app.config.get("MONGO_HOST"), _app.config.get("MONGO_PORT"), _app.config.get("MONGO_DB"),
+                )
         _app.config['SECRET_KEY'] = token_urlsafe()
         CORS(_app, supports_credentials=True)
         return _app
