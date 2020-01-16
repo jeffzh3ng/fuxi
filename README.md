@@ -34,4 +34,4 @@ chmod +x fuxi_manage.sh
 ##### &nbsp;&nbsp;E-Mail:&nbsp;&nbsp;&nbsp;<jeffzh3ng@gmail.com>
 ##### &nbsp;&nbsp;Telegram:&nbsp;&nbsp;&nbsp;<https://t.me/jeffzh3ng>
 ##### &nbsp;&nbsp;WeChat:&nbsp;&nbsp;&nbsp;[QR Code](docs/img/wechat.jpeg)
-&nbsp;&nbsp; *Feel free to contact me if you have any questions or suggestions.*
+*Feel free to contact me if you have any questions or suggestions.*
