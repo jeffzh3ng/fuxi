@@ -1,0 +1,7 @@
+docker pull redis
+docker pull mongo
+
+docker run --name docker_mongo_v1 -p 27018:27017 -d mongo:latest
+docker run --name docker_redis_v1 -p 6370:6379 -d redis:latest
+
+docker restart docker_mongo_v1 docker_redis_v1
