@@ -10,7 +10,7 @@ from flask_restful import Resource
 from fuxi.core.auth.token import auth
 from fuxi.common.utils.poc_handler import poc_parser
 from fuxi.core.databases.orm.scanner.pocsuite_orm import DBPocsuitePlugin
-from fuxi.core.databases.orm.tests import DBTest
+# from fuxi.core.databases.orm.tests import DBTest
 from fuxi.core.data.response import Response
 from fuxi.common.utils.logger import logger
 
@@ -25,7 +25,7 @@ class HelloIndex(Resource):
         """
         try:
             logger.success("req hello index")
-            DBTest.test()
+            # DBTest.test()
             logger.info("demo api test: {}".format(session.get("user")))
             return {'code': 10200, 'status': 'success', 'message': 'ok', 'data': str(session)}
         except Exception as e:
