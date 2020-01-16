@@ -5,6 +5,7 @@
 # @File    : poc_scanner.py
 # @Desc    : ""
 
+import time
 from flask import session, request
 from bson import ObjectId
 from flask_restful import Resource, reqparse
@@ -28,6 +29,7 @@ parser.add_argument('quick', type=bool)
 parser.add_argument('task_id', type=str)
 parser.add_argument('plugin_id', type=str)
 parser.add_argument('search', type=str)
+parser.add_argument('action', type=str)
 
 
 class PocsuiteTasksV1(Resource):
@@ -130,6 +132,32 @@ class PocsuiteTaskManageV1(Resource):
         except Exception as e:
             msg = "delete poc task failed: {}".format(e)
             logger.warning(msg)
+            return Response.failed(message=msg)
+
+    @auth
+    def put(self, tid):
+        """
+        task rescan
+        """
+        try:
+            args = parser.parse_args()
+            action = args['action']
+            if action == "rescan":
+                # delete old data
+                DBPocsuiteVul.delete_by_tid(tid)
+                # update task info
+                DBPocsuiteTask.update_by_id(tid, {
+                    "date": int(time.time()),
+                    "status": "running",
+                    "end_date": 0
+                })
+                # celery task
+                t_poc_scanner.delay(tid)
+                logger.info("{} {} rescan poc scan task".format(session.get('user'), tid))
+            return Response.success(message="successfully {}".format(action))
+        except Exception as e:
+            msg = "rescan the task failed: {}".format(e)
+            logger.warning(tid + msg)
             return Response.failed(message=msg)
 
 

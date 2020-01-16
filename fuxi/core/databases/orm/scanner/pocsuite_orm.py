@@ -115,6 +115,9 @@ class _DBPocsuiteVul(DatabaseBase):
             {"_id": ObjectId(tid)}, {"$set": data}
         )
 
+    def delete_by_tid(self, tid):
+        return mongo[self.table].delete_many({"tid": str(tid)})
+
     def filter_by_tid(self, tid):
         return mongo[self.table].find({"tid": tid})
 
