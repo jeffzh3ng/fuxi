@@ -31,6 +31,7 @@ chmod +x fuxi_manage.sh
 
 ## Issues
 
+##### &nbsp;&nbsp;Github:&nbsp;&nbsp;&nbsp;[New issue](https://github.com/jeffzh3ng/fuxi/issues/new)
 ##### &nbsp;&nbsp;E-Mail:&nbsp;&nbsp;&nbsp;<jeffzh3ng@gmail.com>
 ##### &nbsp;&nbsp;Telegram:&nbsp;&nbsp;&nbsp;<https://t.me/jeffzh3ng>
 ##### &nbsp;&nbsp;WeChat:&nbsp;&nbsp;&nbsp;[QR Code](docs/img/wechat.jpeg)
