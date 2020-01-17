@@ -207,7 +207,7 @@ class IPint(object):
             self._prefixlen = data._prefixlen
             self.ip = data.ip
         elif isinstance(data, STR_TYPES):
-            # TODO: refactor me!
+            # _todo: refactor me!
             # splitting of a string into IP and prefixlen et. al.
             x = data.split('-')
             if len(x) == 2:
@@ -515,7 +515,7 @@ class IPint(object):
         'FFFF0000'
         """
 
-        # TODO: unify with prefixlenToNetmask?
+        # __todo: unify with prefixlenToNetmask?
         bits = _ipVersionToLen(self._ipversion)
         locallen = bits - self._prefixlen
 
@@ -530,7 +530,7 @@ class IPint(object):
         /64
         """
 
-        # TODO: unify with prefixlenToNetmask?
+        # _todo: unify with prefixlenToNetmask?
         # Note: call to _ipVersionToLen() also validates version is 4 or 6
         bits = _ipVersionToLen(self._ipversion)
         if self._ipversion == 4:
@@ -856,7 +856,7 @@ class IP(IPint):
 
         if self._ipversion == 4:
             ret = []
-            # TODO: Refactor. Add support for IPint objects
+            # _todo: Refactor. Add support for IPint objects
             if self.len() < 2 ** 8:
                 for x in self:
                     ret.append(x.reverseName())
@@ -1563,7 +1563,7 @@ def _checkPrefix(ip, prefixlen, version):
     'None'
     """
 
-    # TODO: unify this v4/v6/invalid code in a function
+    # _todo: unify this v4/v6/invalid code in a function
     bits = _ipVersionToLen(version)
 
     if prefixlen < 0 or prefixlen > bits:
