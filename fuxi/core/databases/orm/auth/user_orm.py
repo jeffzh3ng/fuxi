@@ -8,19 +8,32 @@
 import os
 import time
 import hashlib
+from bson import ObjectId
 from secrets import token_hex
 from fuxi.common.utils.logger import logger
 from fuxi.core.databases.db_mongo import mongo, T_ADMIN
 from fuxi.core.databases.db_error import DatabaseError
+from fuxi.core.databases.orm.database_base import DatabaseBase
 
 
-class _DBFuxiAdmin:
+class _DBFuxiAdmin(DatabaseBase):
     def __init__(self):
+        DatabaseBase.__init__(self)
         self.table = T_ADMIN
         self.urandom_count = 16
 
     def find_one(self):
         return mongo[self.table].find_one()
+
+    def get_user_list(self):
+        return mongo[self.table].find({}, {"salt": 0, "password": 0, "token": 0})
+
+    def is_admin(self, uid):
+        item = mongo[self.table].find_one({"_id": ObjectId(uid)})
+        if item and item['role'] == 0:
+            return True
+        else:
+            return False
 
     def add_admin(self, username, password, role=0, nick=None, email=None):
         if not self._user_check(username):

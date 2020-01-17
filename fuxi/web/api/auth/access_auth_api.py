@@ -5,7 +5,7 @@
 # @File    : access_auth.py
 # @Desc    : ""
 
-from flask import request
+from flask import request, session
 from fuxi.core.databases.orm.auth.user_orm import DBFuxiAdmin
 from flask_restful import Resource, reqparse
 from fuxi.core.data.response import Response
@@ -24,6 +24,8 @@ class UserManageV1(Resource):
     @auth
     def post(self):
         try:
+            if session.get("authority") != 0:
+                return Response.failed(message="Add user failed: Permission denied")
             args = parser.parse_args()
             username = args['username']
             password = args['password']
@@ -31,11 +33,11 @@ class UserManageV1(Resource):
             email = args['email']
             if DBFuxiAdmin.add_admin(
                 username=username, password=password,
-                nick=nick, email=email
+                nick=nick, email=email, role=1
             ):
                 return Response.success(message="add successful")
             else:
-                return Response.failed(message="add admin failed", code=10401)
+                return Response.failed(message="Add admin failed", code=10401)
         except Exception as e:
             logger.warning("add admin failed: {}".format(e))
             return Response.failed(message=e)
