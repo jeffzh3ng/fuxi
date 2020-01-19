@@ -42,6 +42,26 @@ class UserManageV1(Resource):
             logger.warning("add admin failed: {}".format(e))
             return Response.failed(message=e)
 
+    @auth
+    def put(self):
+        try:
+            op = session.get("user")
+            args = parser.parse_args()
+            username = args['username'] if args.get("username") else op
+            if not username:
+                return Response.failed(message="Permission denied")
+            password = args['password']
+            if op == username or (session.get("authority") == 0):
+                if len(password) < 8:
+                    return Response.failed(message="Password too short")
+                DBFuxiAdmin.change_password(username, password)
+                return Response.success(message="Your Password has been changed")
+            else:
+                return Response.failed(message="Permission denied")
+        except Exception as e:
+            logger.warning("password change failed: {}".format(e))
+            return Response.failed(message=e)
+
 
 class TokenManageV1(Resource):
     @staticmethod
@@ -58,7 +78,7 @@ class TokenManageV1(Resource):
             else:
                 error = "{} authentication failed: {} {}".format(remote_ip, username, password)
                 logger.warning(error)
-                return Response.failed(message=error, code=10401)
+                return Response.failed(message="authentication failed", code=10401)
         except Exception as e:
             logger.warning("get token failed: {}".format(e))
             return Response.failed(message=e)

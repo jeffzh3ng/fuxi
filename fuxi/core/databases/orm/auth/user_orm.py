@@ -103,6 +103,14 @@ class _DBFuxiAdmin(DatabaseBase):
         else:
             raise DatabaseError("the access token is invalid")
 
+    def change_password(self, username, password):
+        salt = token_hex()[8:16]
+        mongo[self.table].update_one(
+            {"username": username},
+            {"$set": {"salt": salt, "password": self.hash_md5(password, salt), "token": self.generate_token()}}
+        )
+        return ""
+
     @staticmethod
     def hash_md5(password, salt):
         md5_obj = hashlib.md5()
