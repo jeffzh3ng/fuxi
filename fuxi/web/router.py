@@ -25,7 +25,8 @@ from fuxi.web.api.exploit.xss_api import XssTasksV1, XssPayloadsV1, XssTaskManag
     XssPayloadManageV1, XssResultV1, XssResultManageV1
 from fuxi.web.api.discovery.port_api import PortScanTasksV1, PortScanTaskManageV1, PortScanResultV1, \
     PortScanHostV1
-from fuxi.web.api.discovery.whatweb_api import WhatwebTasksV1, WebsiteFPSearchV1, WhatwebTaskManageV1
+from fuxi.web.api.discovery.whatweb_api import WhatwebTasksV1, WebsiteFPSearchV1, WhatwebTaskManageV1, \
+    WhatwebScanTestV1
 
 flask_app.register_blueprint(blue_view)
 api = Api(flask_app)
@@ -61,6 +62,7 @@ api.add_resource(PortScanTaskManageV1, "/api/v1/discovery/port/task/<tid>")
 api.add_resource(PortScanResultV1, "/api/v1/discovery/port/task/host/<tid>")
 api.add_resource(PortScanHostV1, "/api/v1/discovery/port/host/<hid>")
 api.add_resource(WhatwebTasksV1, "/api/v1/discovery/whatweb/task")
+api.add_resource(WhatwebScanTestV1, "/api/v1/discovery/whatweb/task/test")
 api.add_resource(WhatwebTaskManageV1, "/api/v1/discovery/whatweb/task/<tid>")
 api.add_resource(WebsiteFPSearchV1, "/api/v1/discovery/fp/search")
 

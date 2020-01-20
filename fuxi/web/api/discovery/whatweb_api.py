@@ -13,7 +13,7 @@ from fuxi.common.utils.logger import logger
 from fuxi.core.auth.token import auth
 from fuxi.common.utils.time_format import timestamp_to_str
 from fuxi.core.data.response import Response
-from fuxi.core.tasks.discovery.whatweb_task import t_whatweb_task
+from fuxi.core.tasks.discovery.whatweb_task import t_whatweb_task, WhatwebScanner
 
 parser = reqparse.RequestParser()
 parser.add_argument('target', type=str)
@@ -47,6 +47,7 @@ class WhatwebTasksV1(Resource):
 
     @auth
     def post(self):
+        # todo: User input should be checked for security
         # developing: (plugin, option, args security... )
         # I don't want to make ！！！ <T_T>
         try:
@@ -70,6 +71,23 @@ class WhatwebTasksV1(Resource):
             msg = "task creation failed: {}".format(e)
             logger.warning(msg)
             return Response.failed(message=msg)
+
+
+class WhatwebScanTestV1(Resource):
+    @auth
+    def post(self):
+        # todo: User input should be checked for security
+        data = []
+        try:
+            args = parser.parse_args()
+            target = [t.strip() for t in args['target'].split(',')] if args.get("target") else []
+            scanner = WhatwebScanner()
+            data = scanner.run(target, level=3, threads=25, plugin=None, cookie=None, header=None, option=None)
+            return Response.success(data=data)
+        except Exception as e:
+            msg = "test failed: {}".format(e)
+            logger.warning(msg)
+            return Response.failed(message=msg, data=data)
 
 
 class WhatwebTaskManageV1(Resource):
