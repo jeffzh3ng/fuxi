@@ -12,7 +12,7 @@ from migration.db_init import databases_init
 from fuxi.web.views.blue_view import blue_view
 
 from fuxi.web.api.demo.demo_api import HelloIndex, FileUploadDemo, JsonpDemoV1
-from fuxi.web.api.config.settings import AccountManageV1
+from fuxi.web.api.config.settings import AccountManageV1, BasicConfigMangeV1
 from fuxi.web.api.auth.access_auth_api import UserManageV1, TokenManageV1
 from fuxi.web.api.auth.user_api import WhoAreYouV1
 from fuxi.web.api.scanner.poc_scanner import PocsuiteTasksV1, \
@@ -36,6 +36,7 @@ api.add_resource(WhoAreYouV1, "/api/v1/who")
 api.add_resource(UserManageV1, "/api/v1/admin")
 api.add_resource(TokenManageV1, "/api/v1/token")
 api.add_resource(AccountManageV1, "/api/v1/settings/user", "/api/v1/settings/user/<uid>")
+api.add_resource(BasicConfigMangeV1, "/api/v1/settings/basic", "/api/v1/settings/basic/<cid>")
 api.add_resource(PocsuiteTasksV1, "/api/v1/scanner/poc/task")
 api.add_resource(PocsuiteTaskManageV1, "/api/v1/scanner/poc/task/<tid>")
 api.add_resource(PocsuitePluginsV1, "/api/v1/scanner/poc/plugin")

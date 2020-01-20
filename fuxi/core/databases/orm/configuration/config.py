@@ -19,7 +19,8 @@ class _DBFuxiConfiguration(DatabaseBase):
 
     def config_init(self):
         inserted_id = mongo[self.table].insert_one({
-            "whatweb_exe": "", "date": int(time.time())
+            "whatweb_exe": "", "nmap_exe": "",
+            "date": int(time.time())
         }).inserted_id
         return str(inserted_id)
 
@@ -29,6 +30,9 @@ class _DBFuxiConfiguration(DatabaseBase):
             return item[key]
         else:
             return ""
+
+    def setting_item_check(self, key):
+        return mongo[self.table].find_one({key: {"$exists": True}})
 
 
 DBFuxiConfiguration = _DBFuxiConfiguration()

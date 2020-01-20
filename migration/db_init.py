@@ -64,6 +64,8 @@ def databases_init():
         x = FuxiConfigInit(cid)
         if not x.set_whatweb_exe():
             logger.warning("Configuration init: whatweb cannot found")
+        if not x.set_nmap_exe():
+            logger.warning("Configuration init: nmap cannot found")
 
 
 class FuxiConfigInit(object):
@@ -72,11 +74,24 @@ class FuxiConfigInit(object):
 
     def set_whatweb_exe(self):
         re_compile = re.compile('WhatWeb version ([\d]+)\.([\d]+)(?:\.([\d])+)')
-        for exe in ["whatweb", "/usr/local/bin/whatweb", "/usr/bin/whatweb"]:
-            subp = subprocess.run("{} --version".format(exe), shell=True, encoding="utf-8", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        for exe in ["/usr/local/bin/whatweb", "/usr/bin/whatweb", "whatweb"]:
+            subp = subprocess.run("{} --version".format(exe), shell=True, encoding="utf-8",
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if re_compile.match(subp.stdout):
                 DBFuxiConfiguration.update_by_id(self.cid, {
-                    "whatweb_exe": exe
+                    "whatweb_exe": exe,
+                })
+                return True
+        return False
+
+    def set_nmap_exe(self):
+        re_compile = re.compile("Starting Nmap ([\d]+)\.([\d]+)")
+        for exe in ["/usr/local/bin/nmap", "/usr/bin/nmap", "nmap"]:
+            subp = subprocess.run("{} -v".format(exe), shell=True, encoding="utf-8",
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if re_compile.match(subp.stdout):
+                DBFuxiConfiguration.update_by_id(self.cid, {
+                    "nmap_exe": exe,
                 })
                 return True
         return False
