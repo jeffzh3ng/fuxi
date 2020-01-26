@@ -81,8 +81,11 @@ class WhatwebScanTestV1(Resource):
         try:
             args = parser.parse_args()
             target = [t.strip() for t in args['target'].split(',')] if args.get("target") else []
-            scanner = WhatwebScanner()
-            data = scanner.run(target, level=3, threads=25, plugin=None, cookie=None, header=None, option=None)
+            tid = DBWhatwebTask.add(
+                target=target, level=3, threads=25, option=None,
+                header=None, plugin=None, cookie=None
+            )
+            data = t_whatweb_task(tid)
             return Response.success(data=data)
         except Exception as e:
             msg = "test failed: {}".format(e)
@@ -175,7 +178,7 @@ class WebsiteFPSearchV1(Resource):
                     'title': item['title'],
                     'http_status': item['http_status'],
                     'country': item['country'],
-                    'c_code': item['c_code'],
+                    'c_code': str(item['c_code']).lower() if item.get('c_code') else "cn",
                     'ip': item['ip'],
                     'summary': item['summary'],
                     'request': item['request'],

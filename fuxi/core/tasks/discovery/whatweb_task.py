@@ -44,6 +44,7 @@ class WhatwebScanner:
 
 @fuxi_celery.task()
 def t_whatweb_task(task_id):
+    data = []
     try:
         _item = DBWhatwebTask.find_by_id(task_id)
         target = _item['target']
@@ -61,11 +62,11 @@ def t_whatweb_task(task_id):
             scanner.run(target=target, level=level, threads=threads, option=option,
                         header=header, cookie=cookie, plugin=plugin)
             try:
-                data = []
                 for i in scanner.result:
                     i['task_id'] = task_id
                     data.append(i)
                 DBWebFingerPrint.add_multiple(data)
+                return data
             except Exception as e:
                 logger.warning("save website fingerprint failed: {}".format(e))
         except Exception as e:
@@ -77,3 +78,4 @@ def t_whatweb_task(task_id):
         logger.success("whatweb: {} the task completed".format(task_id))
     except Exception as e:
         logger.warning("{} start whatweb task failed: {}".format(task_id, e))
+    return data
