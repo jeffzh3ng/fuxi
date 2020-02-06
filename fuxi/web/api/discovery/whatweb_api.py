@@ -13,9 +13,10 @@ from fuxi.common.utils.logger import logger
 from fuxi.core.auth.token import auth
 from fuxi.common.utils.time_format import timestamp_to_str
 from fuxi.core.data.response import Response
-from fuxi.core.tasks.discovery.whatweb_task import t_whatweb_task, WhatwebScanner
+from fuxi.core.tasks.discovery.whatweb_task import t_whatweb_task
 
 parser = reqparse.RequestParser()
+parser.add_argument('name', type=str)
 parser.add_argument('target', type=str)
 parser.add_argument('level', type=int)   # 1: stealthy 3: aggressive 4: heavy
 parser.add_argument('threads', type=int)
@@ -26,18 +27,23 @@ parser.add_argument('cookie', type=str)
 parser.add_argument('keyword', type=str)
 parser.add_argument('action', type=str)
 
+LEVEL_MAP = {1: "stealthy", 3: "aggressive", 4: "heavy"}
+
 
 class WhatwebTasksV1(Resource):
     @auth
     def get(self):
         data = []
         try:
-            items = DBWhatwebTask.get_list()
+            items = DBWhatwebTask.get_list().sort("date", -1)
             for i in items:
+                if not i.get("name"):
+                    continue
                 i['tid'] = str(i['_id'])
                 del i['_id']
                 i['date'] = timestamp_to_str(i['date'])
                 i['end_date'] = timestamp_to_str(i['end_date'])
+                i['level'] = LEVEL_MAP.get(i['level'])
                 data.append(i)
             return Response.success(data=data)
         except Exception as e:
@@ -52,6 +58,7 @@ class WhatwebTasksV1(Resource):
         # I don't want to make ！！！ <T_T>
         try:
             args = parser.parse_args()
+            name = args.get("name")
             target = [t.strip() for t in args['target'].split(',')] if args.get("target") else []
             # 1: stealthy 3: aggressive 4: heavy ( default 3 )
             level = args.get("level") if args.get("level") in [1, 3, 4] else 3
@@ -61,7 +68,7 @@ class WhatwebTasksV1(Resource):
             plugin = [i.strip() for i in args['plugin'].split(',')] if args.get("plugin") else []
             cookie = args.get("cookie") if args.get("cookie") else ""
             tid = DBWhatwebTask.add(
-                target=target, level=level, threads=threads, option=option,
+                name=name, target=target, level=level, threads=threads, option=option,
                 header=header, plugin=plugin, cookie=cookie
             )
             t_whatweb_task.delay(tid)
@@ -82,10 +89,23 @@ class WhatwebScanTestV1(Resource):
             args = parser.parse_args()
             target = [t.strip() for t in args['target'].split(',')] if args.get("target") else []
             tid = DBWhatwebTask.add(
-                target=target, level=3, threads=25, option=None,
+                name="Temporary task", target=target, level=3, threads=25, option=None,
                 header=None, plugin=None, cookie=None
             )
-            data = t_whatweb_task(tid)
+            items = t_whatweb_task(tid, True)
+            for item in items:
+                tmp_data = {
+                    'domain': item['target'],
+                    'title': item['title'],
+                    'http_status': item['http_status'],
+                    'country': item['country'],
+                    'c_code': str(item['c_code']).lower() if item.get('c_code') else "cn",
+                    'ip': item['ip'],
+                    'summary': item['summary'],
+                    'request': item['request'],
+                    'fingerprint': item['fingerprint'],
+                }
+                data.append(tmp_data)
             return Response.success(data=data)
         except Exception as e:
             msg = "test failed: {}".format(e)

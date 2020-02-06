@@ -18,12 +18,12 @@ class _DBWhatwebTask(DatabaseBase):
         DatabaseBase.__init__(self)
         self.table = T_WHATWEB_TASK
 
-    def add(self, target, level, threads, plugin, option, header, cookie):
+    def add(self, name, target, level, threads, plugin, option, header, cookie):
         op = session.get('user')
         if target and op:
             inserted_id = mongo[self.table].insert_one({
                 "op": op, "date": int(time.time()),  "end_date": 0, "status": "waiting",
-                "target": target, "level": level, "threads": threads, "plugin": plugin,
+                "name": name, "target": target, "level": level, "threads": threads, "plugin": plugin,
                 "option": option, "header": header, "cookie": cookie
             }).inserted_id
             return str(inserted_id)
