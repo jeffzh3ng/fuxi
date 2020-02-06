@@ -1,4 +1,10 @@
-fuxi 2.0 (developing)
+# Fuxi 2.1 - developing
+
+![Version](https://img.shields.io/badge/Version-Alpha--v2.1-red)
+[![Python](https://img.shields.io/badge/Python-3.6%20%7C%203.7-blue)](https://www.python.org/)
+[![GitHub license](https://img.shields.io/badge/License-MIT-green)](https://github.com/jeffzh3ng/fuxi/blob/master/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/jeffzh3ng/fuxi?style=social)](https://github.com/jeffzh3ng/fuxi/stargazers)
+[![Fork](https://img.shields.io/github/forks/jeffzh3ng/fuxi?style=social)](https://github.com/jeffzh3ng/fuxi/fork)
 
 ## Getting Started
 
@@ -27,7 +33,7 @@ chmod +x fuxi_manage.sh
 ./fuxi_manage.sh
 ```
 
-![demo_1](docs/img/2020_01_16_02_demo.png)
+![demo_1](docs/img/2020_02_06_01_demo.png)
 
 ## Issues
 
