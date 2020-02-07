@@ -25,6 +25,7 @@ parser.add_argument('header', type=str)
 parser.add_argument('plugin', type=str)
 parser.add_argument('cookie', type=str)
 parser.add_argument('keyword', type=str)
+parser.add_argument('value', type=str)
 parser.add_argument('action', type=str)
 
 LEVEL_MAP = {1: "stealthy", 3: "aggressive", 4: "heavy"}
@@ -99,7 +100,7 @@ class WhatwebScanTestV1(Resource):
                     'title': item['title'],
                     'http_status': item['http_status'],
                     'country': item['country'],
-                    'c_code': str(item['c_code']).lower() if item.get('c_code') else "cn",
+                    'c_code': item['c_code'].lower() if item.get('c_code') else "zz",
                     'ip': item['ip'],
                     'summary': item['summary'],
                     'request': item['request'],
@@ -185,13 +186,23 @@ class WebsiteFPSearchV1(Resource):
     @auth
     def get(self):
         data = []
+        uniq = []
         try:
             args = parser.parse_args()
-            if args.get('keyword'):
-                items = DBWebFingerPrint.search(args['keyword']).sort("date", -1)
+            if args.get('keyword') and args.get('value'):
+                # Developer say on a rainy day: this design sucks !!!!
+                keyword = args.get('keyword')
+                value = args.get('value').split('||')
+                if len(value) == 1:
+                    items = DBWebFingerPrint.search(keyword, value[0]).sort("date", -1)
+                else:
+                    items = DBWebFingerPrint.search(keyword, value[0], value[1]).sort("date", -1)
             else:
                 items = DBWebFingerPrint.get_list().sort("date", -1)
             for item in items:
+                # domains redupliction removing
+                if item['target'] in uniq:
+                    continue
                 tmp_data = {
                     "tid": str(item['task_id']),
                     'domain': item['target'],
@@ -205,6 +216,7 @@ class WebsiteFPSearchV1(Resource):
                     'fingerprint': item['fingerprint'],
                     'date': timestamp_to_str(item['date'])
                 }
+                uniq.append(item['target'])
                 data.append(tmp_data)
             return Response.success(data=data)
         except Exception as e:

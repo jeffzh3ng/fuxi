@@ -92,16 +92,26 @@ class _DBWebFingerPrint(DatabaseBase):
         else:
             return []
 
-    def search(self, keyword):
-        keyword = keyword.lower()
-        return mongo[self.table].find({
-            "$or": [
-                {"target": {'$regex': keyword, '$options': 'i'}}, {"title": {'$regex': keyword, '$options': 'i'}},
-                {"country": {'$regex': keyword, '$options': 'i'}}, {"ip": {'$regex': keyword, '$options': 'i'}},
-                {"summary": {'$regex': keyword, '$options': 'i'}},
-                {"fingerprint.plugin": {'$regex': keyword, '$options': 'i'}},
-            ]
-        })
+    def search(self, keyword, value, value2=None, limit=1000):
+        value = value.lower()
+        value2 = value2.lower() if value2 else ""
+        if keyword == "domain":
+            return mongo[self.table].find({"target": {'$regex': value, '$options': 'i'}}).limit(limit)
+        if keyword == "ip":
+            return mongo[self.table].find({"ip": {'$regex': value, '$options': 'i'}}).limit(limit)
+        if keyword == "app":
+            if not value2:
+                return mongo[self.table].find({
+                    "fingerprint.plugin": {'$regex': value, '$options': 'i'}
+                }).limit(limit)
+            else:
+                return mongo[self.table].find({
+                    "$and": [
+                        {"fingerprint.plugin": {'$regex': value, '$options': 'i'}},
+                        {"fingerprint.string": value2},
+                    ]
+                }).limit(limit)
+        return mongo[self.table].find().sort("date", -1).limit(limit)
 
 
 DBWhatwebTask = _DBWhatwebTask()

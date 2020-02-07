@@ -157,7 +157,8 @@ class Whatweb(object):
                             second_string = plugin[first_key][second_key][0] if plugin[first_key][
                                 second_key] else "unknown"
                             s += "{} ".format(second_string)
-                        fp.append({"plugin": first_key, "string": s.strip()})
+                        # fix a bug, for better queries
+                        fp.append({"plugin": first_key, "string": s.strip().lower()})
                     else:
                         fp.append({"plugin": first_key, "string": ""})
             for _plugin in fp:
@@ -166,7 +167,7 @@ class Whatweb(object):
                 else:
                     summary += "{}||".format(_plugin['plugin'])
             self.result.append({
-                "target": target, "http_status": http_status, "title": title,
+                "target": target.strip("/"), "http_status": http_status, "title": title,
                 "country": country, "c_code": c_code, "ip": ip,
                 "summary": summary.strip("||"),
                 "request": request,

@@ -184,6 +184,7 @@ class PocsuitePluginsV1(Resource):
                     "name": item['name'],
                     "type": item['type'],
                     "app": item['app'],
+                    "op": item['op'],
                     "date": timestamp_to_str(item['date']),
                 })
             return Response.success(data=data)
