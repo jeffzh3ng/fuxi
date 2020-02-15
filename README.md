@@ -6,6 +6,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/jeffzh3ng/fuxi?style=social)](https://github.com/jeffzh3ng/fuxi/stargazers)
 [![Fork](https://img.shields.io/github/forks/jeffzh3ng/fuxi?style=social)](https://github.com/jeffzh3ng/fuxi/fork)
 
+Fuxi is cross-platform compatible and works in any Python 3.x environment including Linux, Mac OSX and Windows.
+
 ## Getting Started
 
 Dependency: `Linux` `python3.x` `redis` `mongoDB`
@@ -22,7 +24,7 @@ Creating configuration file:
 
 ```shell
 cd instance/
-mv _config.py config.py
+cp _config.py config.py
 vi config.py
 ```
 
