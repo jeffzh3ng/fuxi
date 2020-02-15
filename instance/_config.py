@@ -14,7 +14,7 @@ class BaseConfig(object):
     # Base configuration
     DEBUG = False
     AUTH = True
-    SERVER_HOST = "127.0.0.1"
+    SERVER_HOST = "0.0.0.0"
     SERVER_PORT = 50020
     SECRET_KEY = 'B10ySw1nPL8JBo6z'
 
