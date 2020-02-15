@@ -8,7 +8,7 @@ option=$1
 
 
 start(){
-    nohup python3.6 ${APP_PATH}/fuxi_manage.py > ${APP_PATH}/logs/fuxi_http.log 2>&1 &
+    nohup python3 ${APP_PATH}/fuxi_manage.py > ${APP_PATH}/logs/fuxi_http.log 2>&1 &
     nohup celery worker -A ${APP_PATH}/fuxi_celery_worker.celery -B > ${APP_PATH}/logs/fuxi_celery.log 2>&1 &
 }
 
