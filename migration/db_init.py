@@ -85,7 +85,7 @@ class FuxiConfigInit(object):
         return False
 
     def set_nmap_exe(self):
-        re_compile = re.compile("Starting Nmap ([\d]+)\.([\d]+)")
+        re_compile = re.compile("([\s]*)Starting Nmap ([\d]+)\.([\d]+)")
         for exe in ["/usr/local/bin/nmap", "/usr/bin/nmap", "nmap"]:
             subp = subprocess.run("{} -v".format(exe), shell=True, encoding="utf-8",
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
