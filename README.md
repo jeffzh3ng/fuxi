@@ -20,8 +20,8 @@ docker run -itd --name fuxi_docker -p 5000:50020 jeffzh3ng/fuxi:latest
 ##### Wait about 15 seconds for the service to start, then visit: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 > - Default username: fuxi 
-  - Default password: whoami
-  - Application restart: `docker restart fuxi_docker`
+> - Default password: whoami
+> - Application restart: `docker restart fuxi_docker`
 
 ### Installation
 
@@ -51,7 +51,7 @@ chmod +x fuxi_manage.sh
 ```
 
 > - Default username: fuxi 
-  - Default password: whoami
+> - Default password: whoami
 
 ![demo_1](https://raw.githubusercontent.com/jeffzh3ng/fuxi/v2.1/docs/img/2020_02_06_01_demo.png)
 
