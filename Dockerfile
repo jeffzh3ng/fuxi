@@ -19,7 +19,7 @@ RUN set -x \
     # && python3.7 -m pip config set global.index-url 'https://pypi.tuna.tsinghua.edu.cn/simple' \
     ###
     && python3.7 -m pip install -r /opt/fuxi/requirements.txt \
-    && chmod +x /opt/fuxi/migration/docker_init.sh \
+    && chmod +x /opt/fuxi/migration/docker_init.sh
 
 # Install whatweb
 RUN set -x \
