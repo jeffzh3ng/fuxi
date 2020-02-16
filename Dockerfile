@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 ENV LC_ALL C.UTF-8
 
-RUN mkdir -p /opt/fuxi /data/mongodb /data/log
+RUN mkdir -p /opt/fuxi
 COPY . /opt/fuxi
 
 # Init
@@ -20,7 +20,6 @@ RUN set -x \
     ###
     && python3.7 -m pip install -r /opt/fuxi/requirements.txt \
     && chmod +x /opt/fuxi/migration/docker_init.sh \
-    && ln -s /opt/fuxi/logs /data/log && ln -s /var/lib/mongodb /data/mongodb
 
 # Install whatweb
 RUN set -x \
