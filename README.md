@@ -10,6 +10,21 @@ Fuxi is cross-platform compatible and works in any Python 3.x environment includ
 
 ## Getting Started
 
+### Docker
+
+```shell
+docker pull jeffzh3ng/fuxi
+docker run -itd --name fuxi_docker -p 5000:50020 jeffzh3ng/fuxi:latest
+```
+
+##### Wait about 15 seconds for the service to start, then visit: [http://127.0.0.1:5000](http://127.0.0.1:5000)
+
+> - Default username: fuxi 
+  - Default password: whoami
+  - Application restart: `docker restart fuxi_docker`
+
+### Installation
+
 Dependency: `Linux` `python3.x` `redis` `mongoDB`
 
 Get the project:
@@ -35,7 +50,10 @@ chmod +x fuxi_manage.sh
 ./fuxi_manage.sh
 ```
 
-![demo_1](docs/img/2020_02_06_01_demo.png)
+> - Default username: fuxi 
+  - Default password: whoami
+
+![demo_1](https://raw.githubusercontent.com/jeffzh3ng/fuxi/v2.1/docs/img/2020_02_06_01_demo.png)
 
 ## Issues
 
