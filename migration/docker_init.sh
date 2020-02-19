@@ -5,6 +5,7 @@ sed -i "s/dbpath=.*/dbpath=\/data\/mongodb/" /etc/mongodb.conf
 cp /opt/fuxi/instance/_config.py /opt/fuxi/instance/config.py
 sed -i "s/LOGGER_PAT.*/LOGGER_PATH=\'\/data\/logs\'/" /opt/fuxi/instance/config.py
 mkdir -p /data/mongodb /data/log /data/logs
+chmod -R a+wr /data/mongodb
 service mongodb restart
 service redis-server restart
 cd /opt/fuxi
