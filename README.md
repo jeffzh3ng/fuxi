@@ -23,6 +23,14 @@ docker run -itd --name fuxi_docker -p 5000:50020 jeffzh3ng/fuxi:latest
 > - Default password: whoami
 > - Application restart: `docker restart fuxi_docker`
 
+#### How to persist data
+
+```shell
+docker run -itd --name fuxi_docker -p 5000:50020 -v /your_volume/fuxi:/data jeffzh3ng/fuxi:latest
+```
+
+The data and logs will be saved to `/your_volume/fuxi`
+
 ### Installation
 
 Dependency: `Linux` `python3.x` `redis` `mongoDB`
