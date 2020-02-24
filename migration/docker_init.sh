@@ -10,6 +10,6 @@ service mongodb restart
 service redis-server restart
 cd /opt/fuxi
 nohup python3.7 fuxi_manage.py >> /data/log/fuxi_web.txt 2>&1 &
-nohup celery worker -A fuxi_celery_worker.celery >> /data/log/fuxi_celery.txt 2>&1 &
+nohup celery worker -A fuxi_celery_worker.celery -B >> /data/log/fuxi_celery.txt 2>&1 &
 
 /bin/bash

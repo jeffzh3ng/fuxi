@@ -14,10 +14,11 @@ from fuxi.core.tasks.discovery.whatweb_task import t_whatweb_task
 flask_app.app_context().push()
 beat_schedule = {
     'poc_scanner_loop_1': {
-        'task': "fuxi.tasks.scanner.poc_task.schedule_poc_scanner",
+        'task': "fuxi.core.tasks.scanner.poc_task.schedule_poc_scanner",
         'schedule': timedelta(seconds=60),
     },
 }
-fuxi_celery.conf.beat_schedule.update(beat_schedule)
 
+fuxi_celery.conf.beat_schedule.update(beat_schedule)
+fuxi_celery.conf.timezone = 'UTC'
 celery = fuxi_celery

@@ -7,7 +7,6 @@
 
 import time
 from tempfile import gettempdir
-from datetime import datetime
 from fuxi.common.utils.pocsuite_api import pocsuite_scanner
 from fuxi.web.flask_app import fuxi_celery
 from fuxi.common.libs.target_handler import target_parse
@@ -30,25 +29,25 @@ def poc_config_init(target_list, poc_str, threat=10, quiet=True):
             _target_f_save.write("\n".join(target_list))
         _poc_config['url_file'] = target_file_path
     except Exception as e:
-        logger.warning("save target to temp file failed: {} {}".format(target_list[0], e))
+        logger.warning("Failed to save temporary target file: {} {}".format(target_list[0], e))
     try:
         poc_file_path = tmp_path + "/poc_{}.py".format(int(time.time()))
         with open(poc_file_path, 'w') as _poc_f_save:
             _poc_f_save.write(poc_str.encode('ascii', 'ignore').decode('ascii'))
         _poc_config['poc'] = poc_file_path
     except Exception as e:
-        logger.warning("save poc to temp file failed: {}".format(e))
+        logger.warning("Failed to save temporary poc file: {}".format(e))
     return _poc_config
 
 
 @fuxi_celery.task()
 def t_poc_scanner(task_id):
     """
-    所以 celery 任务 以 t_ 开头用于标识 并在 celery_worker.py 中引入
-    接收 task_id 及并发数 然后使用 task_id 数据库获取target
-    :param task_id: poc task id（写入数据库时返回）
-    # :param thread: 扫描并发
-    :return: 不返回 直接写结果入库
+    All tasks are named in the format 't_xxx' and import into fuxi_celery_worker.py
+    Get task information by task_id
+    :param task_id: poc task id
+    # :param threads:
+    :return:
     """
     try:
         t_item = DBPocsuiteTask.get_detail_by_id(task_id)
@@ -57,16 +56,16 @@ def t_poc_scanner(task_id):
         poc_id_list = t_item['poc']
         thread = t_item['thread']
         op = t_item['op']
-        # 删除旧结果
         # MongoDB(T_POC_VULS).delete_many({"t_id": task_id})
-        # 扫描开始前更改任务状态 running
+        # Update task information: running
         DBPocsuiteTask.update_by_id(task_id, {"status": "running"})
         count = 0
         logger.success("pocsuite task running: {}".format(task_id))
         for poc_id in poc_id_list:
-            # 通过插件 id 查询 poc
+            # get poc info by poc_id
             poc_item = DBPocsuitePlugin.get_detail_by_id(poc_id)
-            # 有时候插件删除了 但任务里还有这个插件的任务 扫描会报错 这个做个判断
+            # When the plugin is removed, but the plugin is still in the task,
+            # The task will make an error, which needs to be determined
             if not poc_item:
                 continue
             _poc_config = poc_config_init(target_list, poc_item['poc'], thread)
@@ -84,7 +83,7 @@ def t_poc_scanner(task_id):
                         count += 1
                 except Exception as e:
                     logger.warning("save poc result failed: {}".format(e))
-        # 扫描完成后更改任务信息
+        # Update task information
         update_data = {
             "status": "completed",
             "vul_count": count,
@@ -122,8 +121,7 @@ def schedule_poc_scanner():
         status = item['status']
         if freq == 'daily':
             if "completed" in status:
-                start_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
-                plan_time = (datetime.now() - start_date).total_seconds()
+                plan_time = int(time.time()) - end_date
                 if plan_time > 60 * 60 * 24:
                     logger.info("daily task running: poc scan {}".format(t_id))
                     t_poc_scanner.delay(t_id)
@@ -131,8 +129,7 @@ def schedule_poc_scanner():
 
         elif freq == 'weekly':
             if "completed" in status:
-                start_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
-                plan_time = (datetime.now() - start_date).total_seconds()
+                plan_time = int(time.time()) - end_date
                 if plan_time > 60 * 60 * 24 * 7:
                     logger.info("weekly task running: poc scan {}".format(t_id))
                     t_poc_scanner.delay(t_id)
@@ -140,8 +137,7 @@ def schedule_poc_scanner():
 
         elif freq == 'monthly':
             if "completed" in status:
-                start_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
-                plan_time = (datetime.now() - start_date).total_seconds()
+                plan_time = int(time.time()) - end_date
                 if plan_time > 60 * 60 * 24 * 30:
                     logger.info("monthly task running: poc scan {}".format(t_id))
                     t_poc_scanner.delay(t_id)
