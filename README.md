@@ -61,7 +61,8 @@ chmod +x fuxi_manage.sh
 > - Default username: fuxi 
 > - Default password: whoami
 
-![demo_1](https://raw.githubusercontent.com/jeffzh3ng/fuxi/v2.1/docs/img/2020_02_06_01_demo.png)
+![demo_1](https://raw.githubusercontent.com/jeffzh3ng/fuxi/v2.1/docs/img/2020_03_20_01_demo.png)
+![demo_1](https://raw.githubusercontent.com/jeffzh3ng/fuxi/v2.1/docs/img/2020_03_20_02_demo.png)
 
 ## Issues
 
