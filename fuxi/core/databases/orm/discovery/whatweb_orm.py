@@ -99,6 +99,8 @@ class _DBWebFingerPrint(DatabaseBase):
             return mongo[self.table].find({"target": {'$regex': value, '$options': 'i'}}).limit(limit)
         if keyword == "ip":
             return mongo[self.table].find({"ip": {'$regex': value, '$options': 'i'}}).limit(limit)
+        if keyword == "title":
+            return mongo[self.table].find({"title": {'$regex': value, '$options': 'i'}}).limit(limit)
         if keyword == "app":
             if not value2:
                 return mongo[self.table].find({
@@ -112,6 +114,9 @@ class _DBWebFingerPrint(DatabaseBase):
                     ]
                 }).limit(limit)
         return mongo[self.table].find().sort("date", -1).limit(limit)
+
+    def find_by_tid(self, tid):
+        return mongo[self.table].find({"task_id": tid})
 
 
 DBWhatwebTask = _DBWhatwebTask()

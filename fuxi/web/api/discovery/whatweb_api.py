@@ -4,16 +4,19 @@
 # @Time    : 2020/01/07
 # @File    : whatweb_api.py 
 # @Desc    : ""
-
+import mimetypes
+import tempfile
 import time
-from flask import session
+from flask import session, make_response, send_from_directory
 from flask_restful import Resource, reqparse
 from fuxi.core.databases.orm.discovery.whatweb_orm import DBWebFingerPrint, DBWhatwebTask
 from fuxi.common.utils.logger import logger
 from fuxi.core.auth.token import auth
 from fuxi.common.utils.time_format import timestamp_to_str
+from fuxi.common.utils.random_str import random_str
 from fuxi.core.data.response import Response
 from fuxi.core.tasks.discovery.whatweb_task import t_whatweb_task
+from fuxi.common.libs.export_file import ExportData
 
 parser = reqparse.RequestParser()
 parser.add_argument('name', type=str)
@@ -43,6 +46,7 @@ class WhatwebTasksV1(Resource):
                 i['tid'] = str(i['_id'])
                 del i['_id']
                 i['date'] = timestamp_to_str(i['date'])
+                i['count'] = DBWebFingerPrint.get_count({"task_id": i['tid']})
                 i['end_date'] = timestamp_to_str(i['end_date'])
                 i['level'] = LEVEL_MAP.get(i['level'])
                 data.append(i)
@@ -117,14 +121,26 @@ class WhatwebScanTestV1(Resource):
 class WhatwebTaskManageV1(Resource):
     @auth
     def get(self, tid):
-        data = {}
+        # data = {}
+        data = []
         try:
-            data = DBWhatwebTask.find_by_id(tid)
-            if data:
-                data['task_id'] = str(data['_id'])
-                data['date'] = timestamp_to_str(data['date'])
-                data['end_date'] = timestamp_to_str(data['end_date'])
-                del data['_id']
+            items = DBWebFingerPrint.find_by_tid(tid)
+            for item in items:
+                plugin = []
+                item['rid'] = str(item['_id'])
+                del item['_id']
+                item['c_code'] = str(item['c_code']).lower() if item.get('c_code') else "us"
+                item['date'] = timestamp_to_str(item['date'])
+                for p in item['fingerprint']:
+                    plugin.append(p['plugin'])
+                item['plugin'] = plugin
+                data.append(item)
+            # data = DBWhatwebTask.find_by_id(tid)
+            # if data:
+            #     data['task_id'] = str(data['_id'])
+            #     data['date'] = timestamp_to_str(data['date'])
+            #     data['end_date'] = timestamp_to_str(data['end_date'])
+            #     del data['_id']
             return Response.success(data=data)
         except Exception as e:
             msg = "get task detail failed: {}".format(e)
@@ -191,7 +207,7 @@ class WebsiteFPSearchV1(Resource):
             args = parser.parse_args()
             if args.get('keyword') and args.get('value'):
                 # Developer say on a rainy day: this design sucks !!!!
-                keyword = args.get('keyword')
+                keyword = str(args.get('keyword')).lower()
                 value = args.get('value').split('||')
                 if len(value) == 1:
                     items = DBWebFingerPrint.search(keyword, value[0]).sort("date", -1)
@@ -224,3 +240,103 @@ class WebsiteFPSearchV1(Resource):
             logger.warning(msg)
             return Response.failed(data=data, message=msg)
 
+
+class WebsiteFPManageV1(Resource):
+    @auth
+    def delete(self, rid):
+        try:
+            op = session.get('user')
+            DBWebFingerPrint.delete_by_id(rid)
+            logger.info("{} deleted the whatweb result: {}".format(op, rid))
+            return Response.success(message="successfully deleted")
+        except Exception as e:
+            msg = "delete the task failed: {}".format(e)
+            logger.warning(msg)
+            return Response.failed(message=msg)
+
+
+class WebFPExportV1(Resource):
+    @auth
+    def get(self, file_type):
+        data = []
+        uniq = []
+        try:
+            args = parser.parse_args()
+            if args.get('keyword') and args.get('value'):
+                # Developer say on a rainy day: this design sucks !!!!
+                keyword = str(args.get('keyword')).lower()
+                value = args.get('value').split('||')
+                if len(value) == 1:
+                    items = DBWebFingerPrint.search(keyword, value[0]).sort("date", -1)
+                else:
+                    items = DBWebFingerPrint.search(keyword, value[0], value[1]).sort("date", -1)
+            else:
+                items = DBWebFingerPrint.get_list().sort("date", -1)
+            for item in items:
+                # domains redupliction removing
+                if item['target'] in uniq:
+                    continue
+                plugin = []
+                for p in item['fingerprint']:
+                    plugin.append(p['plugin'])
+                item['plugin'] = plugin
+                tmp_data = {
+                    'domain': item['target'],
+                    'title': item['title'],
+                    'response': item['http_status'],
+                    'country': str(item['country']).lower(),
+                    'ip': item['ip'],
+                    'app': ",".join(plugin),
+                    'date': timestamp_to_str(item['date'])
+                }
+                uniq.append(item['target'])
+                data.append(tmp_data)
+            export = ExportData(data)
+            filename = "whatweb_" + random_str(6)
+            if file_type == "txt":
+                filename += ".txt"
+                export.txt([], tempfile.gettempdir() + "/" + filename)
+            elif file_type == "csv":
+                filename += ".csv"
+                export.csv(["domain", "title", "response", "country", "ip", "app", "date"], tempfile.gettempdir() + "/" + filename)
+            response = make_response(send_from_directory(tempfile.gettempdir(), filename, as_attachment=True))
+            response.headers["Content-Disposition"] = "attachment; filename={}".format(filename)
+            return response
+        except Exception as e:
+            msg = "export website fingerprint failed: {}".format(e)
+            logger.warning(msg)
+            return Response.failed(message=msg)
+
+
+class WebFPExportWithTIDV1(Resource):
+    @auth
+    def get(self, tid):
+        data = []
+        try:
+            items = DBWebFingerPrint.find_by_tid(tid)
+            for item in items:
+                plugin = []
+                for p in item['fingerprint']:
+                    plugin.append(p['plugin'])
+                item['plugin'] = plugin
+                tmp_data = {
+                    'domain': item['target'],
+                    'title': item['title'],
+                    'response': item['http_status'],
+                    'country': str(item['country']).lower(),
+                    'ip': item['ip'],
+                    'app': ",".join(plugin),
+                    'date': timestamp_to_str(item['date'])
+                }
+                data.append(tmp_data)
+            export = ExportData(data)
+            filename = "whatweb_" + random_str(6) + ".csv"
+            export.csv(["domain", "title", "response", "country", "ip", "app", "date"],
+                       tempfile.gettempdir() + "/" + filename)
+            response = make_response(send_from_directory(tempfile.gettempdir(), filename, as_attachment=True))
+            response.headers["Content-Disposition"] = "attachment; filename={}".format(filename)
+            return response
+        except Exception as e:
+            msg = "export website fingerprint failed: {}".format(e)
+            logger.warning(msg)
+            return Response.failed(message=msg)

@@ -4,10 +4,13 @@
 # @Time    : 2019/9/6
 # @File    : port_api.py
 # @Desc    : ""
-
+import tempfile
 import time
-from flask import session
+from flask import session, make_response, send_from_directory
 from flask_restful import Resource, reqparse
+
+from common.libs.export_file import ExportData
+from common.utils.random_str import random_str
 from fuxi.core.databases.orm.discovery.port_orm import DBPortScanTasks, DBPortScanResult
 from fuxi.common.utils.logger import logger
 from fuxi.core.auth.token import auth
@@ -222,3 +225,36 @@ class PortScanHostV1(Resource):
             logger.warning(msg)
             return Response.failed(message=msg)
 
+
+class PortResultExportV1(Resource):
+    @auth
+    def get(self, tid):
+        data = []
+        try:
+            items = DBPortScanResult.get_list_by_tid(tid).sort("date", -1)
+            task_name = DBPortScanTasks.find_by_id(tid)['name']
+            for item in items:
+                for port in item['detail']:
+                    name = port['detail'].get("name")
+                    state = port['detail'].get("state")
+                    version = port['detail'].get("version")
+                    data.append({
+                        "task_name": task_name,
+                        "host": item['host'],
+                        "hostname": item['hostname'],
+                        "date": timestamp_to_str(item['date']),
+                        "port": port['port'],
+                        "name": name,
+                        "state": state,
+                        "version": version if version else "-",
+                    })
+            export = ExportData(data)
+            filename = "poc_task_" + random_str(6) + ".csv"
+            export.csv(["task_name", "host", "hostname", "port", "name", "state", "version", "date"], tempfile.gettempdir() + "/" + filename)
+            response = make_response(send_from_directory(tempfile.gettempdir(), filename, as_attachment=True))
+            response.headers["Content-Disposition"] = "attachment; filename={}".format(filename)
+            return response
+        except Exception as e:
+            msg = "get port scan result failed: {}".format(e)
+            logger.warning(msg)
+            return Response.failed(data=data, message=msg)

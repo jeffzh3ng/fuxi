@@ -4,11 +4,14 @@
 # @Time    : 2019/1/20
 # @File    : poc_scanner.py
 # @Desc    : ""
-
+import tempfile
 import time
-from flask import session, request
+from flask import session, request, make_response, send_from_directory
 from bson import ObjectId
 from flask_restful import Resource, reqparse
+
+from common.libs.export_file import ExportData
+from common.utils.random_str import random_str
 from fuxi.common.utils.poc_handler import poc_parser
 from fuxi.core.auth.token import auth
 from fuxi.common.utils.time_format import timestamp_to_str
@@ -22,7 +25,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('name', type=str)
 parser.add_argument('target', type=str)
 parser.add_argument('freq', type=str)
-parser.add_argument('thread', type=int)
+parser.add_argument('threads', type=int)
 parser.add_argument('poc', type=str)
 parser.add_argument('quick', type=bool)
 
@@ -30,6 +33,8 @@ parser.add_argument('task_id', type=str)
 parser.add_argument('plugin_id', type=str)
 parser.add_argument('search', type=str)
 parser.add_argument('action', type=str)
+parser.add_argument('keyword', type=str)
+parser.add_argument('value', type=str)
 
 
 class PocsuiteTasksV1(Resource):
@@ -46,7 +51,7 @@ class PocsuiteTasksV1(Resource):
                 data.append({
                     "tid": str(item['_id']),
                     "name": item['name'],
-                    "freq": item['freq'],
+                    "freq": str(item['freq']).lower(),
                     "status": item['status'],
                     "vul_count": item['vul_count'],
                     "op": item['op'],
@@ -72,7 +77,7 @@ class PocsuiteTasksV1(Resource):
             name = args['name']
             target = args['target'].split(',')
             poc_id = args['poc'].split(',')
-            thread = args['thread'] if args['thread'] else 10
+            thread = args['threads'] if args['threads'] else 10
             freq = args['freq']
             if not args['quick']:
                 tid = DBPocsuiteTask.add(
@@ -148,7 +153,7 @@ class PocsuiteTaskManageV1(Resource):
                 # update task info
                 DBPocsuiteTask.update_by_id(tid, {
                     "date": int(time.time()),
-                    "status": "running",
+                    "status": "waiting",
                     "end_date": 0
                 })
                 # celery task
@@ -287,6 +292,8 @@ class PocsuiteResultsV1(Resource):
             else:
                 items = DBPocsuiteVul.get_list().sort("date", -1)
             for item in items:
+                if item['status'] != "success":
+                    continue
                 item['vid'] = str(item['_id'])
                 item['date'] = timestamp_to_str(item['date'])
                 del item['_id']
@@ -338,3 +345,35 @@ class PocsuiteResultManageV1(Resource):
             logger.warning(msg)
             return Response.failed(message=msg)
 
+
+class PocsuiteResultExportV1(Resource):
+    @auth
+    def get(self):
+        data = []
+        title = []
+        try:
+            args = parser.parse_args()
+            if args['keyword'] == "tid":
+                items = DBPocsuiteVul.filter_by_tid(args['value']).sort("date", -1)
+            elif args['keyword'] == "pid":
+                items = DBPocsuiteVul.filter_by_plugin(args['value']).sort("date", -1)
+            else:
+                items = DBPocsuiteVul.get_list().sort("date", -1)
+            for item in items:
+                item['vid'] = str(item['_id'])
+                item['date'] = timestamp_to_str(item['date'])
+                del item['_id']
+                del item['poc']
+                data.append(item)
+            if len(data) > 0:
+                title = [str(i) for i in data[0]]
+            export = ExportData(data)
+            filename = "poc_task_" + random_str(6) + ".csv"
+            export.csv(title, tempfile.gettempdir() + "/" + filename)
+            response = make_response(send_from_directory(tempfile.gettempdir(), filename, as_attachment=True))
+            response.headers["Content-Disposition"] = "attachment; filename={}".format(filename)
+            return response
+        except Exception as e:
+            msg = "export poc scan result failed: {}".format(e)
+            logger.warning(msg)
+            return Response.failed(message=msg)

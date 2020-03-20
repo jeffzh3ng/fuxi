@@ -95,7 +95,7 @@ class _DBPocsuiteVul(DatabaseBase):
         return mongo[self.table].find_one({"_id": ObjectId(str(_id))})
 
     def get_list(self, query=None, data_filter=None):
-        return mongo[self.table].find(query, data_filter)
+        return mongo[self.table].find(query, data_filter).limit(3000)
 
     def add(self, tid, poc, task_name, poc_name, status, target, app, op, result=""):
         if tid and poc and task_name and poc_name and status and target and app:
