@@ -22,8 +22,11 @@ class DatabaseBase:
     def get_list(self, limit=1000):
         return mongo[self.table].find().limit(limit)
 
-    def get_count(self, query):
-        return mongo[self.table].find(query).count()
+    def get_count(self, query=None):
+        if query:
+            return mongo[self.table].find(query).count()
+        else:
+            return mongo[self.table].find().count()
 
     def delete_by_id(self, _id):
         return mongo[self.table].delete_one({"_id": ObjectId(str(_id))})

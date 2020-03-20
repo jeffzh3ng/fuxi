@@ -19,18 +19,20 @@ from fuxi.web.api.scanner.poc_scanner import PocsuiteTasksV1, \
     PocsuitePluginsV1, PocsuiteTaskManageV1, PocsuitePluginManageV1, \
     PocsuiteResultsV1, PocsuiteResultManageV1, PocsuiteResultExportV1
 from fuxi.web.api.exploit.jsonp_api import JsonpTasksV1, JsonpTaskManageV1, JsonDataReceiveV1, \
-    JsonpResListV1, JsonpResManageV1
+    JsonpTaskResListV1, JsonpResManageV1, JsonpResListV1
 from fuxi.web.api.exploit.http_request_api import HttpRequestLogV1, HttpRequestLogManageV1
 from fuxi.web.api.exploit.xss_api import XssTasksV1, XssPayloadsV1, XssTaskManageV1, \
-    XssPayloadManageV1, XssResultV1, XssResultManageV1
+    XssPayloadManageV1, XssResultListV1, XssResultWithTIDV1, XssResultManageV1
 from fuxi.web.api.discovery.port_api import PortScanTasksV1, PortScanTaskManageV1, PortScanResultV1, \
     PortScanHostV1, PortResultExportV1
 from fuxi.web.api.discovery.whatweb_api import WhatwebTasksV1, WebsiteFPSearchV1, WhatwebTaskManageV1, \
     WhatwebScanTestV1, WebsiteFPManageV1, WebFPExportV1, WebFPExportWithTIDV1
+from fuxi.web.api.dashboard.dashboard_api import DashboardResCount
 
 flask_app.register_blueprint(blue_view)
 api = Api(flask_app)
 api.add_resource(HelloIndex, "/api/v1/hello", "/api/v1/demo")
+api.add_resource(DashboardResCount, "/api/v1/dashboard/count")
 api.add_resource(FileUploadDemo, "/api/v1/demo/upload")
 api.add_resource(JsonpDemoV1, "/api/v1/demo/jsonp")
 api.add_resource(WhoAreYouV1, "/api/v1/who")
@@ -47,14 +49,16 @@ api.add_resource(PocsuiteResultManageV1, "/api/v1/scanner/poc/vul/<vul_id>")
 api.add_resource(PocsuiteResultExportV1, "/api/v1/scanner/poc/export")
 api.add_resource(JsonpTasksV1, "/api/v1/exploit/jsonp/task")
 api.add_resource(JsonpTaskManageV1, "/api/v1/exploit/jsonp/task/<tid>")
-api.add_resource(JsonpResListV1, "/api/v1/exploit/jsonp/task/list/<tid>")
+api.add_resource(JsonpTaskResListV1, "/api/v1/exploit/jsonp/task/list/<tid>")
+api.add_resource(JsonpResListV1, "/api/v1/exploit/jsonp/result")
 api.add_resource(JsonDataReceiveV1, "/api/v1/exploit/jsonp/data")
 api.add_resource(JsonpResManageV1, "/api/v1/exploit/jsonp/res/<rid>")
 api.add_resource(HttpRequestLogV1, "/api/v1/exploit/http")
 api.add_resource(HttpRequestLogManageV1, "/api/v1/exploit/http/<hid>")
 api.add_resource(XssTasksV1, "/api/v1/exploit/xss/task")
 api.add_resource(XssTaskManageV1, "/api/v1/exploit/xss/task/<tid>")
-api.add_resource(XssResultV1, "/api/v1/exploit/xss/task/res/<tid>")
+api.add_resource(XssResultWithTIDV1, "/api/v1/exploit/xss/task/res/<tid>")
+api.add_resource(XssResultListV1, "/api/v1/exploit/xss/result")
 api.add_resource(XssPayloadsV1, "/api/v1/exploit/xss/payload")
 api.add_resource(XssPayloadManageV1, "/api/v1/exploit/xss/payload/<pid>")
 api.add_resource(XssResultManageV1, "/api/v1/exploit/xss/result/<rid>")
