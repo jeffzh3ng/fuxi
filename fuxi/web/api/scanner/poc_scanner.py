@@ -10,8 +10,8 @@ from flask import session, request, make_response, send_from_directory
 from bson import ObjectId
 from flask_restful import Resource, reqparse
 
-from common.libs.export_file import ExportData
-from common.utils.random_str import random_str
+from fuxi.common.libs.export_file import ExportData
+from fuxi.common.utils.random_str import random_str
 from fuxi.common.utils.poc_handler import poc_parser
 from fuxi.core.auth.token import auth
 from fuxi.common.utils.time_format import timestamp_to_str

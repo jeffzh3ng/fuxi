@@ -9,8 +9,8 @@ import time
 from flask import session, make_response, send_from_directory
 from flask_restful import Resource, reqparse
 
-from common.libs.export_file import ExportData
-from common.utils.random_str import random_str
+from fuxi.common.libs.export_file import ExportData
+from fuxi.common.utils.random_str import random_str
 from fuxi.core.databases.orm.discovery.port_orm import DBPortScanTasks, DBPortScanResult
 from fuxi.common.utils.logger import logger
 from fuxi.core.auth.token import auth
