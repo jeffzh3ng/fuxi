@@ -30,9 +30,9 @@ class WhatwebScanner:
             # developing
             pass
         try:
-            self.result = scanner.whatweb(target=target, level=level, threads=threads, option=option)
+            self.result = scanner.whatweb(target=target, level=int(level), threads=int(threads), option=option)
         except Exception as e:
-            logger.warning("whatweb scanner: {}".format(e))
+            logger.warning("whatweb scanner: {} {}".format(",".join(target), e))
         return self.result
 
     def get_whatweb_exe(self):

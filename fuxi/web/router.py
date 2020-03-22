@@ -25,6 +25,8 @@ from fuxi.web.api.exploit.xss_api import XssTasksV1, XssPayloadsV1, XssTaskManag
     XssPayloadManageV1, XssResultListV1, XssResultWithTIDV1, XssResultManageV1
 from fuxi.web.api.discovery.port_api import PortScanTasksV1, PortScanTaskManageV1, PortScanResultV1, \
     PortScanHostV1, PortResultExportV1
+from fuxi.web.api.discovery.subdomain_api import SubdomainTasksV1, SubdomainTaskManageV1, SubdomainResultV1, \
+    SubdomainResultManageV1, SubdomainResultExportV1
 from fuxi.web.api.discovery.whatweb_api import WhatwebTasksV1, WebsiteFPSearchV1, WhatwebTaskManageV1, \
     WhatwebScanTestV1, WebsiteFPManageV1, WebFPExportV1, WebFPExportWithTIDV1
 from fuxi.web.api.dashboard.dashboard_api import DashboardResCount
@@ -74,6 +76,11 @@ api.add_resource(WhatwebTaskManageV1, "/api/v1/discovery/whatweb/task/<tid>")
 api.add_resource(WebsiteFPSearchV1, "/api/v1/discovery/fp/search")
 api.add_resource(WebsiteFPManageV1, "/api/v1/discovery/fp/result/<rid>")
 api.add_resource(WebFPExportV1, "/api/v1/discovery/fp/export/<file_type>")
+api.add_resource(SubdomainTasksV1, "/api/v1/discovery/subdomain/task")
+api.add_resource(SubdomainTaskManageV1, "/api/v1/discovery/subdomain/task/<tid>")
+api.add_resource(SubdomainResultV1, "/api/v1/discovery/subdomain/result")
+api.add_resource(SubdomainResultManageV1, "/api/v1/discovery/subdomain/result/<rid>")
+api.add_resource(SubdomainResultExportV1, "/api/v1/discovery/subdomain/export/<tid>")
 
 # Databases init
 databases_init()

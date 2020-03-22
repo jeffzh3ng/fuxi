@@ -67,7 +67,10 @@ class Whatweb(object):
         self.input_file = self._save_target_to_file()
         self.output_file = self._exec()
         res_json = self._result_load()
-        self.result = self._json_to_dict(res_json)
+        try:
+            self.result = self._json_to_dict(res_json)
+        except Exception as err:
+            print("whatweb: json parse failed: {}".format(err))
         return self.result
 
     def _check_whatweb_exe(self):
@@ -128,7 +131,7 @@ class Whatweb(object):
                     s = ""
                     if type(_request_config[first_key]) == dict:
                         for second_key in _request_config[first_key]:
-                            s += "{}: {} | ".format(second_key, str(_request_config[first_key][second_key]))
+                            s += "{}: {} | ".format(str(second_key), str(_request_config[first_key][second_key]))
                     else:
                         s = str(_request_config[first_key])
                     request[first_key] = s.strip(' | ')
@@ -154,9 +157,14 @@ class Whatweb(object):
                     if plugin[first_key]:
                         s = ""
                         for second_key in plugin[first_key]:
-                            second_string = plugin[first_key][second_key][0] if plugin[first_key][
-                                second_key] else "unknown"
-                            s += "{} ".format(second_string)
+                            if plugin[first_key][second_key]:
+                                if type(plugin[first_key][second_key]) == list:
+                                    second_string = plugin[first_key][second_key][0]
+                                else:
+                                    second_string = plugin[first_key][second_key]
+                                s += "{} ".format(second_string)
+                            else:
+                                s += "{} ".format("unknown")
                         # fix a bug, for better queries
                         fp.append({"plugin": first_key, "string": s.strip().lower()})
                     else:
@@ -187,7 +195,7 @@ class Whatweb(object):
 
     def set_timeout(self, timeout):
         self.command = "{} --read-timeout {} --open-timeout {}".format(
-            self.command, timeout, timeout + 2
+            self.command, timeout, timeout
         )
 
     def set_header(self, header):
@@ -230,7 +238,7 @@ if __name__ == '__main__':
         a.set_timeout(3)
         # a.set_plugin(['Zotonic'])
         a.set_useragent("haha")
-        a.whatweb(['127.0.0.1:50020'], level=3)
+        a.whatweb(['crm.joyoung.com'], level=3)
         print(a.command)
         print(a.result)
     except Exception as e:
