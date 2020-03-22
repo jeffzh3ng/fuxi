@@ -3,6 +3,7 @@ __pycache__/
 *$py.class
 *.pyc
 *.log
+*.sqlite
 tests/
 .idea/
 instance/config.py
