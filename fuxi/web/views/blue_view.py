@@ -69,11 +69,17 @@ def http_log():
     if request.method == 'GET':
         try:
             data = request.args.get("data", default=None)
+            verify = request.args.get("verify", default=None)
             if data:
                 ip = request.remote_addr if request.remote_addr else '0.0.0.0'
                 referrer = request.referrer if request.referrer else '-'
                 hid = DBHttpRequestLog.add(ip, referrer, data)
                 return jsonify({"status": "success", "data": str(hid)})
+            elif verify:
+                if DBHttpRequestLog.verify(verify):
+                    return jsonify({"result": True})
+                else:
+                    return jsonify({"result": False})
             else:
                 return jsonify({"status": "failed", "data": ""})
         except Exception as e:
