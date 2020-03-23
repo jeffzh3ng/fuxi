@@ -124,6 +124,8 @@ def schedule_poc_scanner():
                 plan_time = int(time.time()) - end_date
                 if plan_time > 60 * 60 * 24:
                     logger.info("daily task running: poc scan {}".format(t_id))
+                    # delete old data
+                    DBPocsuiteVul.delete_by_tid(t_id)
                     t_poc_scanner.delay(t_id)
                     logger.info("daily task completed: poc scan {}".format(t_id))
 
@@ -132,6 +134,8 @@ def schedule_poc_scanner():
                 plan_time = int(time.time()) - end_date
                 if plan_time > 60 * 60 * 24 * 7:
                     logger.info("weekly task running: poc scan {}".format(t_id))
+                    # delete old data
+                    DBPocsuiteVul.delete_by_tid(t_id)
                     t_poc_scanner.delay(t_id)
                     logger.info("weekly task completed: poc scan {}".format(t_id))
 
@@ -140,8 +144,8 @@ def schedule_poc_scanner():
                 plan_time = int(time.time()) - end_date
                 if plan_time > 60 * 60 * 24 * 30:
                     logger.info("monthly task running: poc scan {}".format(t_id))
+                    # delete old data
+                    DBPocsuiteVul.delete_by_tid(t_id)
                     t_poc_scanner.delay(t_id)
                     logger.info("monthly task completed: poc scan {}".format(t_id))
-
-
 
