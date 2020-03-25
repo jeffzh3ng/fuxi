@@ -26,7 +26,8 @@ class Scanner(object):
     def __init__(self, task_id, target_list, port_list, option):
         self.task_id = task_id
         self.target_list = target_list
-        self.port = port_list if port_list else []
+        self.port = port_list
+        # self.port = port_list if port_list else []
         self.option = option
         self.result = []
 
@@ -39,13 +40,15 @@ class Scanner(object):
                 # add the -p parameter if the port is defined
                 if self.port:
                     if not self.option:
-                        scanner.scan(target, arguments='-p {}'.format(
-                            ",".join(map(str, self.port))
-                        ))
+                        # scanner.scan(target, arguments='-p {}'.format(
+                        #     ",".join(map(str, self.port))
+                        # ))
+                        scanner.scan(target, arguments='-p {}'.format(self.port))
                     else:
-                        self.option += " -p {}".format(
-                            ",".join(map(str, self.port))
-                        )
+                        self.option += " -p {}".format(self.port)
+                        # self.option += " -p {}".format(
+                        #     ",".join(map(str, self.port))
+                        # )
                         scanner.scan(target, arguments=self.option)
                 else:
                     if not self.option:

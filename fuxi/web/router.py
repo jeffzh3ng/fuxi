@@ -42,6 +42,7 @@ api.add_resource(UserManageV1, "/api/v1/admin")
 api.add_resource(TokenManageV1, "/api/v1/token")
 api.add_resource(AccountManageV1, "/api/v1/settings/user", "/api/v1/settings/user/<uid>")
 api.add_resource(BasicConfigMangeV1, "/api/v1/settings/basic", "/api/v1/settings/basic/<cid>")
+
 api.add_resource(PocsuiteTasksV1, "/api/v1/scanner/poc/task")
 api.add_resource(PocsuiteTaskManageV1, "/api/v1/scanner/poc/task/<tid>")
 api.add_resource(PocsuitePluginsV1, "/api/v1/scanner/poc/plugin")

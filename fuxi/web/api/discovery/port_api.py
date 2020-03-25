@@ -70,7 +70,8 @@ class PortScanTasksV1(Resource):
             args = parser.parse_args()
             name = args['name']
             target_list = [target.strip() for target in args['target'].split(',')]
-            port_list = [int(port.strip()) for port in args['port'].split(',')] if args['port'] else []
+            port_list = args['port'].strip()
+            # port_list = [int(port.strip()) for port in args['port'].split(',')] if args['port'] else []
             option = OPTIONS.get(args['option'])
             tid = DBPortScanTasks.add(
                 name=name, target=target_list, port=port_list, option=option
