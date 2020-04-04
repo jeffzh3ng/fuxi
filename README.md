@@ -64,6 +64,11 @@ chmod +x fuxi_manage.sh
 ![demo_1](https://raw.githubusercontent.com/jeffzh3ng/fuxi/v2.1/docs/img/2020_03_20_03_demo.png)
 ![demo_1](https://raw.githubusercontent.com/jeffzh3ng/fuxi/v2.1/docs/img/2020_03_20_02_demo.png)
 
+## Docs
+
+### [API Document](https://raw.githubusercontent.com/jeffzh3ng/fuxi/v2.1/docs/fuxi_api_doc_chinese.md)
+
+
 ## Issues
 
 ##### &nbsp;&nbsp;Github:&nbsp;&nbsp;&nbsp;[New issue](https://github.com/jeffzh3ng/fuxi/issues/new)
