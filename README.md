@@ -66,7 +66,7 @@ chmod +x fuxi_manage.sh
 
 ## Docs
 
-### [API Document](https://raw.githubusercontent.com/jeffzh3ng/fuxi/v2.1/docs/fuxi_api_doc_chinese.md)
+### [API Document](docs/fuxi_api_doc_chinese.md)
 
 
 ## Issues
