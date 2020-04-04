@@ -308,7 +308,6 @@ class PocsuiteResultManageV1(Resource):
     @auth
     def get(self, vul_id):
         """
-        获取 poc 插件详情
         GET /api/v1/scanner/poc/vul/<vul_id>
         :return: all plugin [list]
         """
