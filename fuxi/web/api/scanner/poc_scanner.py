@@ -157,7 +157,8 @@ class PocsuiteTaskManageV1(Resource):
                     "end_date": 0
                 })
                 # celery task
-                t_poc_scanner.delay(tid)
+                # t_poc_scanner.delay(tid)
+                print(t_poc_scanner.delay(tid))
                 logger.info("{} {} rescan poc scan task".format(session.get('user'), tid))
             return Response.success(message="successfully {}".format(action))
         except Exception as e:

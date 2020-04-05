@@ -22,7 +22,7 @@ beat_schedule = {
     },
     'system_info_loop_1': {
         'task': "fuxi.core.tasks.tools.system.t_schedule_update_system_info",
-        'schedule': timedelta(seconds=60 * 5),
+        'schedule': timedelta(seconds=60 * 3),
     },
 }
 
