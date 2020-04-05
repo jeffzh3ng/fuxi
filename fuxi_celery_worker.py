@@ -12,12 +12,17 @@ from fuxi.core.tasks.discovery.port_scan_task import t_port_scan
 from fuxi.core.tasks.discovery.whatweb_task import t_whatweb_task
 from fuxi.core.tasks.discovery.subdomain_task import t_subdomain_task
 from fuxi.core.tasks.scanner.sqlmap_task import t_sqlmap_task
+from fuxi.core.tasks.tools.system import t_schedule_update_system_info
 
 flask_app.app_context().push()
 beat_schedule = {
     'poc_scanner_loop_1': {
         'task': "fuxi.core.tasks.scanner.poc_task.schedule_poc_scanner",
         'schedule': timedelta(seconds=60),
+    },
+    'system_info_loop_1': {
+        'task': "fuxi.core.tasks.tools.system.t_schedule_update_system_info",
+        'schedule': timedelta(seconds=60 * 5),
     },
 }
 

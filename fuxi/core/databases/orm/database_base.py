@@ -13,6 +13,9 @@ class DatabaseBase:
     def __init__(self):
         self.table = ""
 
+    def find(self, query=None):
+        return mongo[self.table].find(query)
+
     def find_one(self):
         return mongo[self.table].find_one()
 

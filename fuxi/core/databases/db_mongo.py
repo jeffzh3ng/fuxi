@@ -13,6 +13,7 @@ mongo = PyMongo(flask_app).db
 T_TESTS = "fuxi_tests"
 
 T_CONFIG = "fuxi_configuration"
+T_SYSTEM_INFO = "fuxi_system_info"
 
 T_ADMIN = "fuxi_admin_v1"
 T_POC_TASKS = "poc_tasks"
