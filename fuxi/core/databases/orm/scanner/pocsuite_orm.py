@@ -70,6 +70,11 @@ class _DBPocsuiteTask(DatabaseBase):
             logger.warning("pocsuite task insert failed: invalid data")
             raise DatabaseError("invalid data")
 
+    def update_celery_id(self, task_id, celery_id):
+        return mongo[self.table].update_one(
+            {"_id": ObjectId(task_id)}, {"$set": {"celery_id": str(celery_id)}}
+        )
+
     def update_by_id(self, tid, data):
         return mongo[self.table].update_one(
             {"_id": ObjectId(tid)}, {"$set": data}

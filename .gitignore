@@ -5,6 +5,7 @@ __pycache__/
 *.log
 *.sqlite
 tests/
+fuxi/common/thirdparty/wydomain/result/
 .idea/
 instance/config.py
 .*

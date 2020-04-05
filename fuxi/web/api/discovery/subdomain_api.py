@@ -66,7 +66,8 @@ class SubdomainTasksV1(Resource):
             info = args['info']
             threads = args['threads']
             tid = DBSubdomainTask.add(name, target, brute, info, threads)
-            t_subdomain_task.delay(tid)
+            cid = t_subdomain_task.delay(tid)
+            DBSubdomainTask.update_celery_id(tid, cid)
             logger.success("{} created the subdomain scan task: {}".format(session.get('user'), tid))
             return Response.success(message="The task was created successfully")
         except Exception as e:
@@ -94,7 +95,8 @@ class SubdomainTaskManageV1(Resource):
                     "end_date": 0
                 })
                 # celery task
-                t_subdomain_task.delay(tid)
+                cid = t_subdomain_task.delay(tid)
+                DBSubdomainTask.update_celery_id(tid, cid)
                 logger.info("{} {} subdomain scan task rescan".format(session.get('user'), tid))
             return Response.success(message="successfully {}".format(action))
         except Exception as e:

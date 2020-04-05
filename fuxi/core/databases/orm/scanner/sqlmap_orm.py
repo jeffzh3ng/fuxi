@@ -6,6 +6,8 @@
 # @Desc    : ""
 
 import time
+
+from bson import ObjectId
 from flask import session
 from fuxi.core.databases.orm.database_base import DatabaseBase
 from fuxi.core.databases.db_mongo import mongo, T_SQLMAP_TASKS, T_SQLMAP_RESULT
@@ -32,6 +34,11 @@ class _DBSqlmapTask(DatabaseBase):
         else:
             logger.warning("sqlmap task insert failed: invalid data")
             raise DatabaseError("invalid data")
+
+    def update_celery_id(self, task_id, celery_id):
+        return mongo[self.table].update_one(
+            {"_id": ObjectId(task_id)}, {"$set": {"celery_id": str(celery_id)}}
+        )
 
 
 class _DBSqlmapResult(DatabaseBase):

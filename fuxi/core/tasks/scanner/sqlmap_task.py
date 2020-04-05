@@ -89,6 +89,10 @@ class Sqlmap(object):
                         break
         return data
 
+    def kill_task(self, tid):
+        response = self._do_request("GET", "/scan/{}/kill".format(tid))
+        return response
+
     def get_status(self, sqlmap_tid):
         response = self._do_request("GET", "/scan/{}/status".format(sqlmap_tid))
         return response['status']

@@ -79,7 +79,8 @@ class SqlmapTasksV1(Resource):
             headers = args['headers']
             target = args['target'].split(',')
             tid = DBSqlmapTask.add(name, target, method, body, level, threads, timeout, cookie, headers, db_banner)
-            t_sqlmap_task.delay(tid)
+            celery_id = t_sqlmap_task.delay(tid)
+            DBSqlmapTask.update_celery_id(tid, celery_id)
             logger.success("{} created the sqlmap task {}".format(op, tid))
             return Response.success(message="The task was created successfully")
         except Exception as e:
@@ -142,8 +143,13 @@ class SqlmapTaskManageV1(Resource):
                     "end_date": 0
                 })
                 # celery task
-                t_sqlmap_task.delay(tid)
+                celery_id = t_sqlmap_task.delay(tid)
+                DBSqlmapTask.update_celery_id(tid, celery_id)
                 logger.info("{} {} rescan sqlmap scan task".format(session.get('user'), tid))
+            elif action == "stop":
+                item = DBSqlmapTask.find_by_id(tid)
+                if item and item.__contains__("celery_id"):
+                    print(item.__contains__("celery_id"))
             return Response.success(message="successfully {}".format(action))
         except Exception as e:
             msg = "rescan the task failed: {}".format(e)

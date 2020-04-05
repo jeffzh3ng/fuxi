@@ -122,7 +122,8 @@ class PortScanTaskManageV1(Resource):
                     "end_date": 0
                 })
                 # celery task
-                t_port_scan.delay(tid)
+                celery_id = t_port_scan.delay(tid)
+                DBPortScanTasks.update_celery_id(tid, celery_id)
                 logger.info("{} {} port scan task rescan".format(session.get('user'), tid))
             return Response.success(message="successfully {}".format(action))
         except Exception as e:

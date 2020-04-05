@@ -6,6 +6,8 @@
 # @Desc    : ""
 
 import time
+
+from bson import ObjectId
 from flask import session
 from fuxi.core.databases.db_error import DatabaseError
 from fuxi.core.databases.orm.database_base import DatabaseBase
@@ -51,6 +53,11 @@ class _DBPortScanTasks(DatabaseBase):
                 {"status": {'$regex': keyword}}, {"op": {'$regex': keyword}},
             ]
         })
+
+    def update_celery_id(self, task_id, celery_id):
+        return mongo[self.table].update_one(
+            {"_id": ObjectId(task_id)}, {"$set": {"celery_id": str(celery_id)}}
+        )
 
 
 class _DBPortScanResult(DatabaseBase):

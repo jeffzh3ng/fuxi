@@ -31,7 +31,8 @@ from fuxi.web.api.discovery.subdomain_api import SubdomainTasksV1, SubdomainTask
     SubdomainResultManageV1, SubdomainResultExportV1
 from fuxi.web.api.discovery.whatweb_api import WhatwebTasksV1, WebsiteFPSearchV1, WhatwebTaskManageV1, \
     WhatwebScanTestV1, WebsiteFPManageV1, WebFPExportV1, WebFPExportWithTIDV1
-from fuxi.web.api.dashboard.dashboard_api import DashboardResCount, DashboardRunningTasksV1, DashboardSystemInfoV1
+from fuxi.web.api.dashboard.dashboard_api import DashboardResCount, DashboardRunningTasksV1, DashboardSystemInfoV1,\
+    DashboardCeleryTaskStopV1
 
 flask_app.register_blueprint(blue_view)
 api = Api(flask_app)
@@ -39,6 +40,7 @@ api.add_resource(HelloIndex, "/api/v1/hello", "/api/v1/demo")
 api.add_resource(DashboardResCount, "/api/v1/dashboard/count")
 api.add_resource(DashboardRunningTasksV1, "/api/v1/dashboard/running")
 api.add_resource(DashboardSystemInfoV1, "/api/v1/dashboard/system")
+api.add_resource(DashboardCeleryTaskStopV1, "/api/v1/dashboard/task/stop/<cid>")
 api.add_resource(FileUploadDemo, "/api/v1/demo/upload")
 api.add_resource(JsonpDemoV1, "/api/v1/demo/jsonp")
 api.add_resource(WhoAreYouV1, "/api/v1/who")
