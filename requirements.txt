@@ -21,3 +21,5 @@ shodan==1.21.3
 texttable==1.6.2
 lxml==4.5.0
 uvloop==0.14.0
+
+sqlmap==1.4.4
