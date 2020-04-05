@@ -7,9 +7,9 @@
 
 from flask_restful import Api
 from fuxi.web.flask_app import flask_app
-
-from migration.db_init import databases_init
 from fuxi.web.views.blue_view import blue_view
+
+from fuxi.web.init import databases_init, third_party_app_init
 
 from fuxi.web.api.demo.demo_api import HelloIndex, FileUploadDemo, JsonpDemoV1
 from fuxi.web.api.config.settings import AccountManageV1, BasicConfigMangeV1
@@ -18,6 +18,8 @@ from fuxi.web.api.auth.user_api import WhoAreYouV1
 from fuxi.web.api.scanner.poc_scanner import PocsuiteTasksV1, \
     PocsuitePluginsV1, PocsuiteTaskManageV1, PocsuitePluginManageV1, \
     PocsuiteResultsV1, PocsuiteResultManageV1, PocsuiteResultExportV1
+from fuxi.web.api.scanner.sqlmap_api import SqlmapTasksV1, SqlmapTaskManageV1, SqlmapResultsV1, \
+    SqlmapResultManageV1, SqlmapTaskResultExportV1
 from fuxi.web.api.exploit.jsonp_api import JsonpTasksV1, JsonpTaskManageV1, JsonDataReceiveV1, \
     JsonpTaskResListV1, JsonpResManageV1, JsonpResListV1
 from fuxi.web.api.exploit.http_request_api import HttpRequestLogV1, HttpRequestLogManageV1
@@ -50,6 +52,11 @@ api.add_resource(PocsuitePluginManageV1, "/api/v1/scanner/poc/plugin/<plugin_id>
 api.add_resource(PocsuiteResultsV1, "/api/v1/scanner/poc/vul")
 api.add_resource(PocsuiteResultManageV1, "/api/v1/scanner/poc/vul/<vul_id>")
 api.add_resource(PocsuiteResultExportV1, "/api/v1/scanner/poc/export")
+api.add_resource(SqlmapTasksV1, "/api/v1/scanner/sqlmap/task")
+api.add_resource(SqlmapTaskManageV1, "/api/v1/scanner/sqlmap/task/<tid>")
+api.add_resource(SqlmapResultsV1, "/api/v1/scanner/sqlmap/result")
+api.add_resource(SqlmapResultManageV1, "/api/v1/scanner/sqlmap/result/<rid>")
+api.add_resource(SqlmapTaskResultExportV1, "/api/v1/scanner/sqlmap/export/<tid>")
 api.add_resource(JsonpTasksV1, "/api/v1/exploit/jsonp/task")
 api.add_resource(JsonpTaskManageV1, "/api/v1/exploit/jsonp/task/<tid>")
 api.add_resource(JsonpTaskResListV1, "/api/v1/exploit/jsonp/task/list/<tid>")
@@ -85,3 +92,4 @@ api.add_resource(SubdomainResultExportV1, "/api/v1/discovery/subdomain/export/<t
 
 # Databases init
 databases_init()
+third_party_app_init()

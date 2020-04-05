@@ -113,8 +113,9 @@ class BasicConfigMangeV1(Resource):
             # pass
             item = DBFuxiConfiguration.find_one()
             if item:
-                data.append({"key": "whatweb_exe", "desc": "Whatweb path"})
-                data.append({"key": "nmap_exe", "desc": "Nmap path"})
+                data.append({"key": "whatweb_exe", "desc": "Whatweb"})
+                data.append({"key": "nmap_exe", "desc": "Nmap"})
+                data.append({"key": "sqlmap_api", "desc": "SQLMAP API"})
                 for i in data:
                     i['cid'] = str(item['_id'])
                     i['value'] = item[i['key']]

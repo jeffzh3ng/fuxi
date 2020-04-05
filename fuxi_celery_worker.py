@@ -11,6 +11,7 @@ from fuxi.core.tasks.scanner.poc_task import schedule_poc_scanner
 from fuxi.core.tasks.discovery.port_scan_task import t_port_scan
 from fuxi.core.tasks.discovery.whatweb_task import t_whatweb_task
 from fuxi.core.tasks.discovery.subdomain_task import t_subdomain_task
+from fuxi.core.tasks.scanner.sqlmap_task import t_sqlmap_task
 
 flask_app.app_context().push()
 beat_schedule = {
