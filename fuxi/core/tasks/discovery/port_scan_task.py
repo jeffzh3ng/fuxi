@@ -45,11 +45,11 @@ class Scanner(object):
                         # ))
                         scanner.scan(target, arguments='-p {}'.format(self.port))
                     else:
-                        self.option += " -p {}".format(self.port)
+                        _option = " -p {}".format(self.port)
                         # self.option += " -p {}".format(
                         #     ",".join(map(str, self.port))
                         # )
-                        scanner.scan(target, arguments=self.option)
+                        scanner.scan(target, arguments=_option)
                 else:
                     if not self.option:
                         scanner.scan(target)
